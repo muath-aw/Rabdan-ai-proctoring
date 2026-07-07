@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/rsk-design-system-a54c193a-bf67-49ff-9dbd-8af394c5c6ea/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/rsk-design-system-a54c193a-bf67-49ff-9dbd-8af394c5c6ea/styles.css">
+<style>
+  html, body { margin: 0; height: 100%; }
+  #app { min-height: 100vh; }
+  @keyframes rskpulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.6); } }
+  :root, .dark {
+    --primary: oklch(56% .045 95);
+    --primary-15: oklch(97% .008 95);
+    --primary-25: oklch(95% .012 95);
+    --primary-50: oklch(93% .02 95);
+    --primary-100: oklch(87% .03 95);
+    --primary-200: oklch(80% .04 95);
+    --primary-300: oklch(72% .048 95);
+    --primary-400: oklch(64% .05 95);
+    --primary-600: oklch(50% .042 95);
+    --primary-700: oklch(44% .036 95);
+    --primary-800: oklch(38% .03 95);
+    --primary-900: oklch(31% .024 95);
+    --primary-foreground: oklch(99% 0 0);
+    --accent: oklch(95% .012 95);
+    --accent-200: oklch(93% .02 95);
+    --accent-300: oklch(87% .03 95);
+    --accent-400: oklch(80% .04 95);
+  }
+</style>
+<script>
+  window.__SCREEN = 'PastWorkspaceScreen';
+</script>
+<script>
+(function () {
+  if (window.__rskBooting) return;
+  window.__rskBooting = true;
+  var BASE = '_ds/rsk-design-system-a54c193a-bf67-49ff-9dbd-8af394c5c6ea/';
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src; s.async = false;
+      s.onload = res; s.onerror = function () { rej(new Error('load fail ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function waitFor(cond) { return new Promise(function (res) { (function chk() { if (cond()) return res(); setTimeout(chk, 25); })(); }); }
+  waitFor(function () { return window.React && window.ReactDOM; })
+    .then(function () { return loadScript('https://unpkg.com/@tanstack/react-table@8.21.3/build/umd/index.production.js'); })
+    .then(function () { return loadScript(BASE + '_ds_bundle.js'); })
+    .then(function () { return loadScript('./rsk-app.js'); })
+    .then(function () { return waitFor(function () { return window[window.__SCREEN] && document.getElementById('app'); }); })
+    .then(function () { window.ReactDOM.createRoot(document.getElementById('app')).render(window.React.createElement(window[window.__SCREEN])); })
+    .catch(function (e) { console.error('RSK boot failed', e); window.__rskBootError = String(e); });
+})();
+</script>
+</helmet>
+<div id="app"></div>
+</x-dc>
+</body>
+</html>

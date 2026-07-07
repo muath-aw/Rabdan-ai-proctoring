@@ -1,0 +1,822 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/calendar/CalendarGrid/**",
+              "components/calendar/CalendarPicker/**",
+              "components/forms/FormCheckbox/**",
+              "components/forms/FormCheckboxGroup/**",
+              "components/forms/FormCombobox/**",
+              "components/forms/FormContainer/**",
+              "components/forms/FormControl/**",
+              "components/forms/FormDatePicker/**",
+              "components/forms/FormDateRange/**",
+              "components/forms/FormFileUploader/**",
+              "components/forms/FormInput/**",
+              "components/forms/FormLabel/**",
+              "components/forms/FormMessage/**",
+              "components/forms/FormMultiCombobox/**",
+              "components/forms/FormNumber/**",
+              "components/forms/FormRadioGroup/**",
+              "components/forms/FormSelect/**",
+              "components/forms/FormTextarea/**",
+              "components/forms/FormTimePicker/**",
+              "components/shared/ActionPanel/**",
+              "components/shared/BlankSlate/**",
+              "components/shared/Breadcrumb/**",
+              "components/shared/CollapsibleCard/**",
+              "components/shared/Combobox/**",
+              "components/shared/CommandPalette/**",
+              "components/shared/ConfirmDialog/**",
+              "components/shared/CountTooltip/**",
+              "components/shared/DateNavigation/**",
+              "components/shared/ErrorTooltip/**",
+              "components/shared/FacetedFilter/**",
+              "components/shared/FieldSection/**",
+              "components/shared/FileCard/**",
+              "components/shared/FileIcon/**",
+              "components/shared/FileUploader/**",
+              "components/shared/FormSubmitButton/**",
+              "components/shared/FormSubmitButtons/**",
+              "components/shared/GridCard/**",
+              "components/shared/LanguageSwitcher/**",
+              "components/shared/LinkButton/**",
+              "components/shared/LoadingButton/**",
+              "components/shared/MetaCard/**",
+              "components/shared/PrimeCard/**",
+              "components/shared/PrimeDialog/**",
+              "components/shared/PrimeDropdown/**",
+              "components/shared/PrimeLoader/**",
+              "components/shared/PrimeTooltip/**",
+              "components/shared/Stepper/**",
+              "components/shared/ThemeSwitcher/**",
+              "components/shared/Toaster/**",
+              "components/shared/TooltipButton/**",
+              "components/tables/AsyncSelectFilter/**",
+              "components/tables/DataTable/**",
+              "components/tables/DataTableFacetedFilter/**",
+              "components/tables/DateFilter/**",
+              "components/tables/FilterChipList/**",
+              "components/tables/SelectFilter/**",
+              "components/tables/TimeFilter/**",
+              "components/ui/Accordion/**",
+              "components/ui/Alert/**",
+              "components/ui/Avatar/**",
+              "components/ui/Badge/**",
+              "components/ui/Button/**",
+              "components/ui/Calendar/**",
+              "components/ui/CalendarMonthGrid/**",
+              "components/ui/CalendarTimeGrid/**",
+              "components/ui/Card/**",
+              "components/ui/Checkbox/**",
+              "components/ui/CheckboxGroup/**",
+              "components/ui/Chip/**",
+              "components/ui/Collapsible/**",
+              "components/ui/Command/**",
+              "components/ui/Dialog/**",
+              "components/ui/Divider/**",
+              "components/ui/DropdownMenu/**",
+              "components/ui/FormattedNumber/**",
+              "components/ui/Input/**",
+              "components/ui/Layout/**",
+              "components/ui/Pagination/**",
+              "components/ui/Popover/**",
+              "components/ui/Progress/**",
+              "components/ui/RadioDot/**",
+              "components/ui/RadioGroup/**",
+              "components/ui/ScrollArea/**",
+              "components/ui/ScrollSelector/**",
+              "components/ui/Select/**",
+              "components/ui/Skeleton/**",
+              "components/ui/Switch/**",
+              "components/ui/Table/**",
+              "components/ui/Tabs/**",
+              "components/ui/TimePicker/**",
+              "components/ui/Toast/**",
+              "components/ui/ToggleGroup/**",
+              "components/ui/Tooltip/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Accordion": {
+        "replaces": []
+      },
+      "ActionPanel": {
+        "replaces": []
+      },
+      "Alert": {
+        "replaces": []
+      },
+      "AsyncSelectFilter": {
+        "replaces": []
+      },
+      "Avatar": {
+        "replaces": []
+      },
+      "Badge": {
+        "replaces": []
+      },
+      "BlankSlate": {
+        "replaces": []
+      },
+      "Breadcrumb": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Calendar": {
+        "replaces": []
+      },
+      "CalendarGrid": {
+        "replaces": []
+      },
+      "CalendarMonthGrid": {
+        "replaces": []
+      },
+      "CalendarPicker": {
+        "replaces": []
+      },
+      "CalendarTimeGrid": {
+        "replaces": []
+      },
+      "Card": {
+        "replaces": []
+      },
+      "Checkbox": {
+        "replaces": []
+      },
+      "CheckboxGroup": {
+        "replaces": []
+      },
+      "Chip": {
+        "replaces": []
+      },
+      "Collapsible": {
+        "replaces": []
+      },
+      "CollapsibleCard": {
+        "replaces": []
+      },
+      "Combobox": {
+        "replaces": []
+      },
+      "Command": {
+        "replaces": []
+      },
+      "CommandPalette": {
+        "replaces": []
+      },
+      "ConfirmDialog": {
+        "replaces": []
+      },
+      "CountTooltip": {
+        "replaces": []
+      },
+      "DataTable": {
+        "replaces": []
+      },
+      "DataTableFacetedFilter": {
+        "replaces": []
+      },
+      "DateFilter": {
+        "replaces": []
+      },
+      "DateNavigation": {
+        "replaces": []
+      },
+      "Dialog": {
+        "replaces": []
+      },
+      "Divider": {
+        "replaces": []
+      },
+      "DropdownMenu": {
+        "replaces": []
+      },
+      "ErrorTooltip": {
+        "replaces": []
+      },
+      "FacetedFilter": {
+        "replaces": []
+      },
+      "FieldSection": {
+        "replaces": []
+      },
+      "FileCard": {
+        "replaces": []
+      },
+      "FileIcon": {
+        "replaces": []
+      },
+      "FileUploader": {
+        "replaces": []
+      },
+      "FilterChipList": {
+        "replaces": []
+      },
+      "FormattedNumber": {
+        "replaces": []
+      },
+      "FormCheckbox": {
+        "replaces": []
+      },
+      "FormCheckboxGroup": {
+        "replaces": []
+      },
+      "FormCombobox": {
+        "replaces": []
+      },
+      "FormContainer": {
+        "replaces": []
+      },
+      "FormControl": {
+        "replaces": []
+      },
+      "FormDatePicker": {
+        "replaces": []
+      },
+      "FormDateRange": {
+        "replaces": []
+      },
+      "FormFileUploader": {
+        "replaces": []
+      },
+      "FormInput": {
+        "replaces": []
+      },
+      "FormLabel": {
+        "replaces": []
+      },
+      "FormMessage": {
+        "replaces": []
+      },
+      "FormMultiCombobox": {
+        "replaces": []
+      },
+      "FormNumber": {
+        "replaces": []
+      },
+      "FormRadioGroup": {
+        "replaces": []
+      },
+      "FormSelect": {
+        "replaces": []
+      },
+      "FormSubmitButton": {
+        "replaces": []
+      },
+      "FormSubmitButtons": {
+        "replaces": []
+      },
+      "FormTextarea": {
+        "replaces": []
+      },
+      "FormTimePicker": {
+        "replaces": []
+      },
+      "GridCard": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": []
+      },
+      "LanguageSwitcher": {
+        "replaces": []
+      },
+      "Layout": {
+        "replaces": []
+      },
+      "LinkButton": {
+        "replaces": []
+      },
+      "LoadingButton": {
+        "replaces": []
+      },
+      "MetaCard": {
+        "replaces": []
+      },
+      "Pagination": {
+        "replaces": []
+      },
+      "Popover": {
+        "replaces": []
+      },
+      "PrimeCard": {
+        "replaces": []
+      },
+      "PrimeDialog": {
+        "replaces": []
+      },
+      "PrimeDropdown": {
+        "replaces": []
+      },
+      "PrimeLoader": {
+        "replaces": []
+      },
+      "PrimeTooltip": {
+        "replaces": []
+      },
+      "Progress": {
+        "replaces": []
+      },
+      "RadioDot": {
+        "replaces": []
+      },
+      "RadioGroup": {
+        "replaces": []
+      },
+      "ScrollArea": {
+        "replaces": []
+      },
+      "ScrollSelector": {
+        "replaces": []
+      },
+      "Select": {
+        "replaces": []
+      },
+      "SelectFilter": {
+        "replaces": []
+      },
+      "Skeleton": {
+        "replaces": []
+      },
+      "Stepper": {
+        "replaces": []
+      },
+      "Switch": {
+        "replaces": []
+      },
+      "Table": {
+        "replaces": []
+      },
+      "Tabs": {
+        "replaces": []
+      },
+      "ThemeSwitcher": {
+        "replaces": []
+      },
+      "TimeFilter": {
+        "replaces": []
+      },
+      "TimePicker": {
+        "replaces": []
+      },
+      "Toast": {
+        "replaces": []
+      },
+      "Toaster": {
+        "replaces": []
+      },
+      "ToggleGroup": {
+        "replaces": []
+      },
+      "Tooltip": {
+        "replaces": []
+      },
+      "TooltipButton": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--accent",
+      "--accent-200",
+      "--accent-300",
+      "--accent-400",
+      "--accent-foreground",
+      "--animate-pulse",
+      "--animate-spin",
+      "--background",
+      "--blur-sm",
+      "--blur-xl",
+      "--border",
+      "--canvas",
+      "--code-foreground",
+      "--code-muted",
+      "--code-surface",
+      "--color-muted-200",
+      "--color-muted-50",
+      "--container-2xl",
+      "--container-4xl",
+      "--container-6xl",
+      "--container-lg",
+      "--container-md",
+      "--container-sm",
+      "--container-xs",
+      "--default-font-family",
+      "--default-mono-font-family",
+      "--default-transition-duration",
+      "--default-transition-timing-function",
+      "--destructive",
+      "--destructive-200",
+      "--destructive-300",
+      "--destructive-400",
+      "--destructive-foreground",
+      "--ease-in-out",
+      "--ease-out",
+      "--font-mono",
+      "--font-sans",
+      "--font-weight-bold",
+      "--font-weight-medium",
+      "--font-weight-normal",
+      "--font-weight-semibold",
+      "--foreground",
+      "--leading-relaxed",
+      "--leading-tight",
+      "--line",
+      "--muted",
+      "--muted-100",
+      "--muted-200",
+      "--muted-300",
+      "--muted-400",
+      "--muted-50",
+      "--muted-foreground",
+      "--popover",
+      "--popover-foreground",
+      "--primary",
+      "--primary-100",
+      "--primary-15",
+      "--primary-200",
+      "--primary-25",
+      "--primary-300",
+      "--primary-400",
+      "--primary-50",
+      "--primary-600",
+      "--primary-700",
+      "--primary-800",
+      "--primary-900",
+      "--primary-foreground",
+      "--radius-2xl",
+      "--radius-3xl",
+      "--radius-lg",
+      "--radius-md",
+      "--radius-sm",
+      "--radius-xl",
+      "--secondary",
+      "--secondary-100",
+      "--secondary-15",
+      "--secondary-200",
+      "--secondary-25",
+      "--secondary-300",
+      "--secondary-400",
+      "--secondary-50",
+      "--secondary-600",
+      "--secondary-700",
+      "--secondary-800",
+      "--secondary-900",
+      "--secondary-foreground",
+      "--sidebar",
+      "--sidebar-accent",
+      "--sidebar-accent-foreground",
+      "--sidebar-border",
+      "--sidebar-foreground",
+      "--skh2",
+      "--skw",
+      "--spacing",
+      "--success",
+      "--success-200",
+      "--success-300",
+      "--success-400",
+      "--success-foreground",
+      "--surface",
+      "--surface-15",
+      "--surface-25",
+      "--surface-50",
+      "--surface-70",
+      "--surface-foreground",
+      "--tracking-tight",
+      "--tracking-wider",
+      "--tracking-widest",
+      "--tw-animation-delay",
+      "--tw-animation-direction",
+      "--tw-animation-duration",
+      "--tw-animation-fill-mode",
+      "--tw-animation-iteration-count",
+      "--tw-backdrop-blur",
+      "--tw-backdrop-brightness",
+      "--tw-backdrop-contrast",
+      "--tw-backdrop-grayscale",
+      "--tw-backdrop-hue-rotate",
+      "--tw-backdrop-invert",
+      "--tw-backdrop-opacity",
+      "--tw-backdrop-saturate",
+      "--tw-backdrop-sepia",
+      "--tw-blur",
+      "--tw-border-style",
+      "--tw-brightness",
+      "--tw-content",
+      "--tw-contrast",
+      "--tw-drop-shadow",
+      "--tw-drop-shadow-alpha",
+      "--tw-drop-shadow-color",
+      "--tw-drop-shadow-size",
+      "--tw-duration",
+      "--tw-ease",
+      "--tw-enter-blur",
+      "--tw-enter-opacity",
+      "--tw-enter-rotate",
+      "--tw-enter-scale",
+      "--tw-enter-translate-x",
+      "--tw-enter-translate-y",
+      "--tw-exit-blur",
+      "--tw-exit-opacity",
+      "--tw-exit-rotate",
+      "--tw-exit-scale",
+      "--tw-exit-translate-x",
+      "--tw-exit-translate-y",
+      "--tw-font-weight",
+      "--tw-gradient-from",
+      "--tw-gradient-from-position",
+      "--tw-gradient-position",
+      "--tw-gradient-stops",
+      "--tw-gradient-to",
+      "--tw-gradient-to-position",
+      "--tw-gradient-via",
+      "--tw-gradient-via-position",
+      "--tw-gradient-via-stops",
+      "--tw-grayscale",
+      "--tw-hue-rotate",
+      "--tw-inset-ring-color",
+      "--tw-inset-ring-shadow",
+      "--tw-inset-shadow",
+      "--tw-inset-shadow-alpha",
+      "--tw-inset-shadow-color",
+      "--tw-invert",
+      "--tw-leading",
+      "--tw-opacity",
+      "--tw-outline-style",
+      "--tw-ring-color",
+      "--tw-ring-inset",
+      "--tw-ring-offset-color",
+      "--tw-ring-offset-shadow",
+      "--tw-ring-offset-width",
+      "--tw-ring-shadow",
+      "--tw-rotate-x",
+      "--tw-rotate-y",
+      "--tw-rotate-z",
+      "--tw-saturate",
+      "--tw-scale-x",
+      "--tw-scale-y",
+      "--tw-scale-z",
+      "--tw-scroll-snap-strictness",
+      "--tw-sepia",
+      "--tw-shadow",
+      "--tw-shadow-alpha",
+      "--tw-shadow-color",
+      "--tw-skew-x",
+      "--tw-skew-y",
+      "--tw-space-x-reverse",
+      "--tw-space-y-reverse",
+      "--tw-tracking",
+      "--tw-translate-x",
+      "--tw-translate-y",
+      "--tw-translate-z",
+      "--warning",
+      "--warning-200",
+      "--warning-300",
+      "--warning-400",
+      "--warning-foreground"
+    ],
+    "tokenKinds": {
+      "--tw-translate-x": "other",
+      "--tw-translate-y": "other",
+      "--tw-translate-z": "other",
+      "--tw-scale-x": "other",
+      "--tw-scale-y": "other",
+      "--tw-scale-z": "other",
+      "--tw-rotate-x": "color",
+      "--tw-rotate-y": "color",
+      "--tw-rotate-z": "color",
+      "--tw-skew-x": "color",
+      "--tw-skew-y": "color",
+      "--tw-scroll-snap-strictness": "other",
+      "--tw-space-y-reverse": "spacing",
+      "--tw-space-x-reverse": "spacing",
+      "--tw-border-style": "other",
+      "--tw-gradient-position": "other",
+      "--tw-gradient-from": "color",
+      "--tw-gradient-via": "color",
+      "--tw-gradient-to": "color",
+      "--tw-gradient-stops": "color",
+      "--tw-gradient-via-stops": "color",
+      "--tw-gradient-from-position": "spacing",
+      "--tw-gradient-via-position": "spacing",
+      "--tw-gradient-to-position": "spacing",
+      "--tw-leading": "font",
+      "--tw-font-weight": "font",
+      "--tw-tracking": "font",
+      "--tw-shadow": "shadow",
+      "--tw-shadow-color": "shadow",
+      "--tw-shadow-alpha": "shadow",
+      "--tw-inset-shadow": "shadow",
+      "--tw-inset-shadow-color": "shadow",
+      "--tw-inset-shadow-alpha": "shadow",
+      "--tw-ring-color": "color",
+      "--tw-ring-shadow": "shadow",
+      "--tw-inset-ring-color": "color",
+      "--tw-inset-ring-shadow": "shadow",
+      "--tw-ring-inset": "spacing",
+      "--tw-ring-offset-width": "spacing",
+      "--tw-ring-offset-color": "color",
+      "--tw-ring-offset-shadow": "shadow",
+      "--tw-outline-style": "other",
+      "--tw-blur": "other",
+      "--tw-brightness": "color",
+      "--tw-contrast": "color",
+      "--tw-grayscale": "color",
+      "--tw-hue-rotate": "color",
+      "--tw-invert": "color",
+      "--tw-opacity": "color",
+      "--tw-saturate": "color",
+      "--tw-sepia": "color",
+      "--tw-drop-shadow": "shadow",
+      "--tw-drop-shadow-color": "shadow",
+      "--tw-drop-shadow-alpha": "shadow",
+      "--tw-drop-shadow-size": "shadow",
+      "--tw-backdrop-blur": "other",
+      "--tw-backdrop-brightness": "color",
+      "--tw-backdrop-contrast": "color",
+      "--tw-backdrop-grayscale": "color",
+      "--tw-backdrop-hue-rotate": "color",
+      "--tw-backdrop-invert": "color",
+      "--tw-backdrop-opacity": "color",
+      "--tw-backdrop-saturate": "color",
+      "--tw-backdrop-sepia": "color",
+      "--tw-duration": "other",
+      "--tw-ease": "color",
+      "--tw-content": "other",
+      "--tw-animation-delay": "other",
+      "--tw-animation-direction": "other",
+      "--tw-animation-duration": "color",
+      "--tw-animation-fill-mode": "color",
+      "--tw-animation-iteration-count": "other",
+      "--tw-enter-blur": "other",
+      "--tw-enter-opacity": "other",
+      "--tw-enter-rotate": "other",
+      "--tw-enter-scale": "other",
+      "--tw-enter-translate-x": "other",
+      "--tw-enter-translate-y": "other",
+      "--tw-exit-blur": "other",
+      "--tw-exit-opacity": "other",
+      "--tw-exit-rotate": "other",
+      "--tw-exit-scale": "other",
+      "--tw-exit-translate-x": "other",
+      "--tw-exit-translate-y": "other",
+      "--font-sans": "font",
+      "--font-mono": "font",
+      "--spacing": "spacing",
+      "--container-xs": "spacing",
+      "--container-sm": "spacing",
+      "--container-md": "spacing",
+      "--container-lg": "spacing",
+      "--container-2xl": "spacing",
+      "--container-4xl": "spacing",
+      "--container-6xl": "spacing",
+      "--font-weight-normal": "font",
+      "--font-weight-medium": "font",
+      "--font-weight-semibold": "font",
+      "--font-weight-bold": "font",
+      "--tracking-tight": "font",
+      "--tracking-wider": "font",
+      "--tracking-widest": "font",
+      "--leading-tight": "font",
+      "--leading-relaxed": "font",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-lg": "radius",
+      "--radius-xl": "radius",
+      "--radius-2xl": "radius",
+      "--radius-3xl": "radius",
+      "--ease-out": "other",
+      "--ease-in-out": "other",
+      "--animate-spin": "other",
+      "--animate-pulse": "other",
+      "--blur-sm": "spacing",
+      "--blur-xl": "spacing",
+      "--default-transition-duration": "other",
+      "--default-transition-timing-function": "other",
+      "--default-font-family": "font",
+      "--default-mono-font-family": "font",
+      "--color-muted-50": "color",
+      "--color-muted-200": "color",
+      "--background": "color",
+      "--foreground": "color",
+      "--primary": "color",
+      "--primary-15": "color",
+      "--primary-25": "color",
+      "--primary-50": "color",
+      "--primary-100": "color",
+      "--primary-200": "color",
+      "--primary-300": "color",
+      "--primary-400": "color",
+      "--primary-600": "color",
+      "--primary-700": "color",
+      "--primary-800": "color",
+      "--primary-900": "color",
+      "--primary-foreground": "color",
+      "--secondary": "color",
+      "--secondary-15": "color",
+      "--secondary-25": "color",
+      "--secondary-50": "color",
+      "--secondary-100": "color",
+      "--secondary-200": "color",
+      "--secondary-300": "color",
+      "--secondary-400": "color",
+      "--secondary-600": "color",
+      "--secondary-700": "color",
+      "--secondary-800": "color",
+      "--secondary-900": "color",
+      "--secondary-foreground": "color",
+      "--canvas": "color",
+      "--muted": "color",
+      "--muted-50": "color",
+      "--muted-100": "color",
+      "--muted-200": "color",
+      "--muted-300": "color",
+      "--muted-400": "color",
+      "--muted-foreground": "color",
+      "--surface": "color",
+      "--surface-15": "color",
+      "--surface-25": "color",
+      "--surface-50": "color",
+      "--surface-70": "color",
+      "--surface-foreground": "color",
+      "--accent": "color",
+      "--accent-200": "color",
+      "--accent-300": "color",
+      "--accent-400": "color",
+      "--accent-foreground": "color",
+      "--success-200": "color",
+      "--success-300": "color",
+      "--success-400": "color",
+      "--success-foreground": "color",
+      "--destructive-200": "color",
+      "--destructive-300": "color",
+      "--destructive-400": "color",
+      "--destructive-foreground": "color",
+      "--warning-200": "color",
+      "--warning-300": "color",
+      "--warning-400": "color",
+      "--warning-foreground": "color",
+      "--border": "color",
+      "--sidebar": "color",
+      "--sidebar-foreground": "color",
+      "--sidebar-accent": "color",
+      "--sidebar-accent-foreground": "color",
+      "--sidebar-border": "color",
+      "--popover": "color",
+      "--popover-foreground": "color",
+      "--code-surface": "color",
+      "--code-foreground": "color",
+      "--code-muted": "color",
+      "--success": "color",
+      "--destructive": "color",
+      "--warning": "color",
+      "--line": "spacing",
+      "--skh2": "spacing",
+      "--skw": "spacing"
+    },
+    "fontFamilies": []
+  }
+}

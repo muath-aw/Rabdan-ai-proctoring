@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1C1917; background: #F7F6F2; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #ECEAE0; }
+</style>
+</helmet>
+
+<div style="max-width:1120px;margin:0 auto;padding:64px 40px 120px;">
+
+  <!-- ============ HEADER ============ -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:32px;padding-bottom:40px;border-bottom:1px solid #E7E5E4;margin-bottom:56px;">
+    <div style="max-width:680px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#7F7457;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:15px;">P</div>
+        <span style="font-weight:600;font-size:15px;letter-spacing:-.01em;">Proctor</span>
+        <span style="font-size:12px;color:#A8A29E;border-left:1px solid #E7E5E4;padding-left:12px;">Exam Integrity Console</span>
+      </div>
+      <h1 style="font-size:40px;line-height:1.05;letter-spacing:-.025em;font-weight:600;margin:0 0 16px;">Design System</h1>
+      <p style="font-size:17px;line-height:1.6;color:#57534E;margin:0;">The foundational language for the incident review and triage console — built on shadcn/ui primitives and Tailwind tokens, tuned for calm, data-dense records work in light mode.</p>
+    </div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#78716C;text-align:right;">
+      <div>v1.0</div>
+      <div>shadcn/ui · Tailwind</div>
+      <div style="color:#7F7457;">#7F7457</div>
+    </div>
+  </div>
+
+  <!-- ============ COLOR ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">01 — Color</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Palette</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Brand olive-brown carries primary actions and active states only. Warm stone neutrals do the heavy lifting for surfaces and text.</p>
+
+    <!-- brand scale -->
+    <div style="font-size:13px;font-weight:600;color:#44403C;margin-bottom:10px;">Brand · Olive-brown</div>
+    <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-bottom:28px;">
+      <sc-for list="{{ brandScale }}" as="s" hint-placeholder-count="10">
+        <div>
+          <div style="{{ s.sw }}"></div>
+          <div style="font-size:11px;font-weight:600;margin-top:6px;color:#44403C;">{{ s.step }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#A8A29E;">{{ s.hex }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- neutral scale -->
+    <div style="font-size:13px;font-weight:600;color:#44403C;margin-bottom:10px;">Neutral · Stone</div>
+    <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-bottom:28px;">
+      <sc-for list="{{ neutralScale }}" as="s" hint-placeholder-count="10">
+        <div>
+          <div style="{{ s.sw }}"></div>
+          <div style="font-size:11px;font-weight:600;margin-top:6px;color:#44403C;">{{ s.step }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#A8A29E;">{{ s.hex }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- semantic tokens -->
+    <div style="font-size:13px;font-weight:600;color:#44403C;margin-bottom:10px;">Semantic tokens</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="8">
+        <div style="border:1px solid #E7E5E4;border-radius:10px;padding:12px;background:#fff;display:flex;align-items:center;gap:12px;">
+          <div style="{{ t.sw }}"></div>
+          <div style="min-width:0;">
+            <div style="font-size:12px;font-weight:600;">{{ t.name }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#A8A29E;">{{ t.hex }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ============ STATUS ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">02 — Status language</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Incident states</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Every incident lives in exactly one of three states. Color is consistent everywhere it appears — badges, table rows, filters, charts.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+      <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;overflow:hidden;">
+        <div style="height:4px;background:#D97706;"></div>
+        <div style="padding:20px;">
+          <div style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#FEF3C7;color:#92400E;">
+            <span style="width:7px;height:7px;border-radius:999px;background:#D97706;"></span>Open
+          </div>
+          <p style="font-size:13px;line-height:1.55;color:#57534E;margin:14px 0 0;">Awaiting review. Neutral but attention-drawing — these are the administrator's queue.</p>
+        </div>
+      </div>
+
+      <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;overflow:hidden;">
+        <div style="height:4px;background:#16A34A;"></div>
+        <div style="padding:20px;">
+          <div style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#DCFCE7;color:#166534;">
+            <span style="width:7px;height:7px;border-radius:999px;background:#16A34A;"></span>Confirmed
+          </div>
+          <p style="font-size:13px;line-height:1.55;color:#57534E;margin:14px 0 0;">Verified as a genuine violation. Positive resolution — eligible for evidence export.</p>
+        </div>
+      </div>
+
+      <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;overflow:hidden;">
+        <div style="height:4px;background:#D6D3D1;"></div>
+        <div style="padding:20px;">
+          <div style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#F5F5F4;color:#78716C;">
+            <span style="width:7px;height:7px;border-radius:999px;background:#A8A29E;"></span>Discarded
+          </div>
+          <p style="font-size:13px;line-height:1.55;color:#78716C;margin:14px 0 0;">Reviewed and dismissed as a false positive. Muted and de-emphasized, but retained.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ TYPOGRAPHY ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">03 — Typography</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Type scale</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">IBM Plex Sans for the interface; IBM Plex Mono for IDs, timestamps and numeric data.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;padding:8px 28px;">
+      <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="6">
+        <div style="display:flex;align-items:baseline;gap:24px;padding:18px 0;border-bottom:1px solid #F5F5F4;">
+          <div style="width:128px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#A8A29E;line-height:1.5;">{{ t.meta }}</div>
+          <div style="{{ t.style }}">{{ t.sample }}</div>
+        </div>
+      </sc-for>
+      <div style="display:flex;align-items:baseline;gap:24px;padding:18px 0;">
+        <div style="width:128px;flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#A8A29E;">Mono / 13</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#44403C;">INC-2026-04817 · 09:42:18 · cam-04</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ BUTTONS ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">04 — Buttons</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Button</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Six variants, three sizes. Brand fill reserved for the single primary action per view.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;padding:28px;">
+      <div style="font-size:12px;font-weight:600;color:#78716C;margin-bottom:14px;">Variants</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:28px;">
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;transition:background .15s;" style-hover="background:#6B6049;">Primary</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid #F5F5F4;padding:0 16px;height:36px;background:#F5F5F4;color:#1C1917;transition:background .15s;" style-hover="background:#E7E5E4;">Secondary</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid #E7E5E4;padding:0 16px;height:36px;background:#fff;color:#1C1917;transition:background .15s;" style-hover="background:#FAFAF9;">Outline</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:transparent;color:#1C1917;transition:background .15s;" style-hover="background:#F5F5F4;">Ghost</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#B91C1C;color:#fff;transition:background .15s;" style-hover="background:#991B1B;">Destructive</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:none;padding:0 4px;height:36px;background:transparent;color:#7F7457;text-decoration:underline;text-underline-offset:3px;">Link</button>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#78716C;margin-bottom:14px;">Sizes &amp; states</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 12px;height:32px;background:#7F7457;color:#fff;">Small</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;">Default</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 15px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 24px;height:42px;background:#7F7457;color:#fff;">Large</button>
+        <button type="button" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;box-shadow:0 0 0 2px #fff,0 0 0 4px #7F7457;">Focused</button>
+        <button type="button" disabled style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:not-allowed;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;opacity:.5;">Disabled</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FORMS ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">05 — Forms</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Input &amp; Select</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Subtle borders, brand focus ring, 36px control height to match buttons.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;padding:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+      <div>
+        <label style="display:block;font-size:13px;font-weight:500;margin-bottom:7px;">Search incidents</label>
+        <input type="text" value="{{ inputVal }}" onInput="{{ onInput }}" placeholder="ID, exam, or student…" style="width:100%;height:36px;padding:0 12px;font:400 14px 'IBM Plex Sans',sans-serif;color:#1C1917;background:#fff;border:1px solid #E7E5E4;border-radius:6px;outline:none;transition:box-shadow .15s,border-color .15s;" style-focus="border-color:#7F7457;box-shadow:0 0 0 3px rgba(127,116,87,.18);" />
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:500;margin-bottom:7px;">Violation type</label>
+        <select value="{{ selectVal }}" onChange="{{ onSelect }}" style="width:100%;height:36px;padding:0 12px;font:400 14px 'IBM Plex Sans',sans-serif;color:#1C1917;background:#fff;border:1px solid #E7E5E4;border-radius:6px;outline:none;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2378716C%22 stroke-width=%222%22><path d=%22M6 9l6 6 6-6%22/></svg>');background-repeat:no-repeat;background-position:right 10px center;" style-focus="border-color:#7F7457;box-shadow:0 0 0 3px rgba(127,116,87,.18);">
+          <option value="phone">Phone detected</option>
+          <option value="adjacent">Adjacent students</option>
+          <option value="absence">Candidate absent</option>
+          <option value="multiface">Multiple faces</option>
+        </select>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:500;margin-bottom:7px;color:#A8A29E;">Disabled</label>
+        <input type="text" disabled placeholder="Locked field" style="width:100%;height:36px;padding:0 12px;font:400 14px 'IBM Plex Sans',sans-serif;color:#A8A29E;background:#F5F5F4;border:1px solid #E7E5E4;border-radius:6px;outline:none;cursor:not-allowed;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ BADGES ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">06 — Badges</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Badge</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Status badges (with dot) and neutral metadata badges for type and source.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;padding:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+      <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#FEF3C7;color:#92400E;"><span style="width:7px;height:7px;border-radius:999px;background:#D97706;"></span>Open</span>
+      <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#DCFCE7;color:#166534;"><span style="width:7px;height:7px;border-radius:999px;background:#16A34A;"></span>Confirmed</span>
+      <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#F5F5F4;color:#78716C;"><span style="width:7px;height:7px;border-radius:999px;background:#A8A29E;"></span>Discarded</span>
+      <span style="display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:#fff;border:1px solid #E7E5E4;color:#44403C;">Phone detected</span>
+      <span style="display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:#7F7457;color:#fff;">Priority</span>
+      <span style="display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:3px 10px;border-radius:6px;background:#ECEAE0;color:#564E3B;">cam-04</span>
+    </div>
+  </div>
+
+  <!-- ============ TABS ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">07 — Tabs</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Tabs</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Primary navigation between incident states. Active tab carries the brand underline.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;padding:8px 28px 28px;">
+      <div style="display:flex;gap:4px;border-bottom:1px solid #E7E5E4;margin:0 -28px 24px;padding:8px 28px 0;">
+        <sc-for list="{{ tabList }}" as="t" hint-placeholder-count="3">
+          <button type="button" onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }} <span style="{{ t.countStyle }}">{{ t.count }}</span></button>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span style="{{ panelBadgeStyle }}"><span style="{{ panelDotStyle }}"></span>{{ panelTitle }}</span>
+        <p style="font-size:14px;color:#57534E;margin:0;">{{ panelDesc }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CARD + TABLE ============ -->
+  <div style="margin-bottom:64px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">08 — Card &amp; Table</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Incident table</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">The workhorse pattern — a Card wrapping a dense Table, showing tokens and badges in context.</p>
+    <div style="border:1px solid #E7E5E4;border-radius:12px;background:#fff;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #E7E5E4;">
+        <div>
+          <div style="font-size:15px;font-weight:600;">Recent incidents</div>
+          <div style="font-size:13px;color:#78716C;margin-top:2px;">Calculus II · Final · Hall B</div>
+        </div>
+        <button type="button" onClick="{{ openDialog }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 13px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid #E7E5E4;padding:0 14px;height:34px;background:#fff;color:#1C1917;" style-hover="background:#FAFAF9;">Review sample</button>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <thead>
+          <tr style="background:#FAFAF9;">
+            <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#78716C;padding:10px 22px;">Incident</th>
+            <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#78716C;padding:10px 12px;">Type</th>
+            <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#78716C;padding:10px 12px;">Detected</th>
+            <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#78716C;padding:10px 12px;">Source</th>
+            <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#78716C;padding:10px 22px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+            <tr style="{{ r.rowStyle }}">
+              <td style="padding:14px 22px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#44403C;">{{ r.id }}</td>
+              <td style="padding:14px 12px;color:#1C1917;">{{ r.type }}</td>
+              <td style="padding:14px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#57534E;">{{ r.time }}</td>
+              <td style="padding:14px 12px;color:#78716C;font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ r.cam }}</td>
+              <td style="padding:14px 22px;"><span style="{{ r.badgeStyle }}"><span style="{{ r.dotStyle }}"></span>{{ r.status }}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ DIALOG ============ -->
+  <div style="margin-bottom:24px;">
+    <div style="text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;color:#7F7457;margin-bottom:8px;">09 — Dialog</div>
+    <h2 style="font-size:24px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px;">Dialog</h2>
+    <p style="font-size:15px;color:#78716C;margin:0 0 28px;max-width:620px;">Modal review surface — overlay scrim, card panel, footer actions. Click “Review sample” above or the button below.</p>
+    <button type="button" onClick="{{ openDialog }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;" style-hover="background:#6B6049;">Open dialog</button>
+  </div>
+
+  <sc-if value="{{ dialogOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:50;background:rgba(28,25,23,.45);display:flex;align-items:center;justify-content:center;padding:24px;" onClick="{{ closeDialog }}">
+      <div onClick="{{ stop }}" style="width:100%;max-width:480px;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.28);overflow:hidden;">
+        <div style="padding:22px 24px 0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <h3 style="font-size:18px;font-weight:600;margin:0;letter-spacing:-.01em;">Review incident</h3>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:#FEF3C7;color:#92400E;"><span style="width:7px;height:7px;border-radius:999px;background:#D97706;"></span>Open</span>
+          </div>
+          <p style="font-size:14px;color:#78716C;margin:8px 0 0;font-family:'IBM Plex Mono',monospace;">INC-2026-04817 · 09:42:18 · cam-04</p>
+        </div>
+        <div style="padding:18px 24px;">
+          <div style="height:180px;border-radius:10px;background:repeating-linear-gradient(45deg,#F5F5F4,#F5F5F4 10px,#EFEEEC 10px,#EFEEEC 20px);border:1px solid #E7E5E4;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#A8A29E;">camera frame · phone detected</div>
+          <p style="font-size:14px;line-height:1.55;color:#44403C;margin:16px 0 0;">A handheld device was detected in the candidate's lap for 4.2 seconds. Confirm to add to the evidence package, or discard as a false positive.</p>
+        </div>
+        <div style="padding:16px 24px;background:#FAFAF9;border-top:1px solid #E7E5E4;display:flex;justify-content:flex-end;gap:10px;">
+          <button type="button" onClick="{{ closeDialog }}" style="display:inline-flex;align-items:center;justify-content:center;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid #E7E5E4;padding:0 16px;height:36px;background:#fff;color:#78716C;" style-hover="background:#F5F5F4;">Discard</button>
+          <button type="button" onClick="{{ closeDialog }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14px/1 'IBM Plex Sans',sans-serif;border-radius:6px;cursor:pointer;border:1px solid transparent;padding:0 16px;height:36px;background:#7F7457;color:#fff;" style-hover="background:#6B6049;">Confirm violation</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'open', dialogOpen: false, selectVal: 'phone', inputVal: '' };
+
+  renderVals() {
+    const swatch = (bg, extra) => `height:46px;border-radius:8px;background:${bg};${extra || ''}`;
+
+    const brandScale = [
+      ['50','#F7F6F2'],['100','#ECEAE0'],['200','#D8D3C2'],['300','#C0B89E'],['400','#A39875'],
+      ['500','#7F7457'],['600','#6B6049'],['700','#564E3B'],['800','#423C2E'],['900','#2E2A20'],
+    ].map(([step,hex]) => ({ step, hex, sw: swatch(hex, step==='500'?'box-shadow:0 0 0 2px #fff,0 0 0 3px #7F7457;':'') }));
+
+    const neutralScale = [
+      ['50','#FAFAF9'],['100','#F5F5F4'],['200','#E7E5E4'],['300','#D6D3D1'],['400','#A8A29E'],
+      ['500','#78716C'],['600','#57534E'],['700','#44403C'],['800','#292524'],['900','#1C1917'],
+    ].map(([step,hex]) => ({ step, hex, sw: swatch(hex, (step==='50'||step==='100')?'border:1px solid #E7E5E4;':'') }));
+
+    const tk = (bg, br) => `width:34px;height:34px;border-radius:8px;flex-shrink:0;background:${bg};${br?'border:1px solid #E7E5E4;':''}`;
+    const tokens = [
+      { name:'Background', hex:'#F7F6F2', sw: tk('#F7F6F2', true) },
+      { name:'Card', hex:'#FFFFFF', sw: tk('#FFFFFF', true) },
+      { name:'Foreground', hex:'#1C1917', sw: tk('#1C1917') },
+      { name:'Muted', hex:'#F5F5F4', sw: tk('#F5F5F4', true) },
+      { name:'Muted fg', hex:'#78716C', sw: tk('#78716C') },
+      { name:'Border', hex:'#E7E5E4', sw: tk('#E7E5E4') },
+      { name:'Primary', hex:'#7F7457', sw: tk('#7F7457') },
+      { name:'Ring', hex:'#7F7457', sw: tk('#7F7457') },
+    ];
+
+    const typeScale = [
+      { meta:'Display / 40 · 600', sample:'Exam integrity', style:'font-size:40px;font-weight:600;letter-spacing:-.025em;line-height:1;' },
+      { meta:'H1 / 24 · 600', sample:'Incident review', style:'font-size:24px;font-weight:600;letter-spacing:-.02em;' },
+      { meta:'H2 / 18 · 600', sample:'Recent incidents', style:'font-size:18px;font-weight:600;' },
+      { meta:'Body / 15 · 400', sample:'Confirm to add this incident to the evidence package.', style:'font-size:15px;color:#44403C;' },
+      { meta:'Small / 13 · 400', sample:'Reviewed and dismissed as a false positive.', style:'font-size:13px;color:#78716C;' },
+      { meta:'Label / 11 · 600', sample:'STATUS', style:'font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#78716C;' },
+    ];
+
+    const stat = {
+      open:      { bg:'#FEF3C7', color:'#92400E', dot:'#D97706' },
+      confirmed: { bg:'#DCFCE7', color:'#166534', dot:'#16A34A' },
+      discarded: { bg:'#F5F5F4', color:'#78716C', dot:'#A8A29E' },
+    };
+    const badge = (s) => `display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:999px;background:${s.bg};color:${s.color};`;
+    const dot = (s) => `width:7px;height:7px;border-radius:999px;background:${s.dot};`;
+
+    const tabsMeta = {
+      open:      { label:'Open', count:24, desc:'Awaiting an administrator’s review — the active triage queue.' },
+      confirmed: { label:'Confirmed', count:9, desc:'Verified violations, ready to bundle into an evidence export.' },
+      discarded: { label:'Discarded', count:31, desc:'Dismissed false positives, retained for the audit trail.' },
+    };
+    const tabIds = ['open','confirmed','discarded'];
+    const tabList = tabIds.map(id => {
+      const on = id === this.state.tab;
+      return {
+        id, label: tabsMeta[id].label, count: tabsMeta[id].count,
+        onClick: () => this.setState({ tab: id }),
+        style: `display:inline-flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;font:600 14px 'IBM Plex Sans',sans-serif;padding:10px 4px;margin-right:20px;color:${on?'#1C1917':'#78716C'};border-bottom:2px solid ${on?'#7F7457':'transparent'};transition:color .15s;`,
+        countStyle: `font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:${on?'#ECEAE0':'#F5F5F4'};color:${on?'#564E3B':'#A8A29E'};`,
+      };
+    });
+    const activeStat = stat[this.state.tab];
+
+    const rowsData = [
+      { id:'INC-2026-04817', type:'Phone detected', time:'09:42:18', cam:'cam-04', status:'open' },
+      { id:'INC-2026-04802', type:'Adjacent students', time:'09:38:51', cam:'cam-02', status:'confirmed' },
+      { id:'INC-2026-04795', type:'Multiple faces', time:'09:31:07', cam:'cam-07', status:'discarded' },
+      { id:'INC-2026-04781', type:'Phone detected', time:'09:24:33', cam:'cam-04', status:'open' },
+    ];
+    const rows = rowsData.map((r, i) => {
+      const s = stat[r.status];
+      return {
+        ...r,
+        status: tabsMeta[r.status].label,
+        rowStyle: `border-top:1px solid #F5F5F4;${r.status==='discarded'?'opacity:.62;':''}`,
+        badgeStyle: badge(s),
+        dotStyle: dot(s),
+      };
+    });
+
+    return {
+      brandScale, neutralScale, tokens, typeScale, rows,
+      tabList,
+      panelTitle: tabsMeta[this.state.tab].label,
+      panelDesc: tabsMeta[this.state.tab].desc,
+      panelBadgeStyle: badge(activeStat),
+      panelDotStyle: dot(activeStat),
+      inputVal: this.state.inputVal,
+      onInput: (e) => this.setState({ inputVal: e.target.value }),
+      selectVal: this.state.selectVal,
+      onSelect: (e) => this.setState({ selectVal: e.target.value }),
+      dialogOpen: this.state.dialogOpen,
+      openDialog: () => this.setState({ dialogOpen: true }),
+      closeDialog: () => this.setState({ dialogOpen: false }),
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>
