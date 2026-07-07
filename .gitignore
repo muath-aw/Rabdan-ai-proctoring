@@ -14,6 +14,7 @@ tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
 
 # misc
+.claude/
 .DS_Store
 .env.local
 .env.development.local

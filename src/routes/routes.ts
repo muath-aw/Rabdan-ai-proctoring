@@ -1,6 +1,6 @@
 import type { ElementType } from 'react';
 
-import { LayoutDashboard, Component, ScanEye, Settings, Users } from 'lucide-react';
+import { ScanEye, Settings } from 'lucide-react';
 
 export type AppMenu = {
   id: string;
@@ -47,27 +47,6 @@ export const FULL_ROUTES_PATH = {
 export const PLAIN_ROUTES = FULL_ROUTES_PATH;
 
 export const APP_MENU: AppMenu[] = [
-  {
-    id: 'dashboard',
-    path: FULL_ROUTES_PATH.HOME.DASHBOARD,
-    name: 'Dashboard',
-    group: 'main',
-    icon: LayoutDashboard,
-  },
-  {
-    id: 'components',
-    path: FULL_ROUTES_PATH.COMPONENTS.INDEX,
-    name: 'Components',
-    group: 'main',
-    icon: Component,
-  },
-  {
-    id: 'members',
-    path: FULL_ROUTES_PATH.MEMBERS.INDEX,
-    name: 'Members',
-    group: 'main',
-    icon: Users,
-  },
   {
     id: 'exams',
     path: FULL_ROUTES_PATH.EXAMS.INDEX,

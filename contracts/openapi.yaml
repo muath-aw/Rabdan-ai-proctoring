@@ -1,0 +1,556 @@
+openapi: 3.1.0
+info:
+  title: Rabdan AI Proctoring API
+  version: 0.1.0-draft
+  description: >
+    API contract for the Rabdan AI Proctoring admin dashboard.
+
+    STATUS: DRAFT. This is the frontend team's proposed contract, derived from
+    the implemented UI. It is the single source of truth both teams build to.
+    Backend implements these endpoints; frontend generates its client types from
+    this file. Anything marked `TODO`/`open question` is not yet agreed — see
+    contracts/README.md.
+
+    Design decisions already made:
+      - Backend OWNS violation detection (runs/integrates the CV pipeline,
+        persists incidents, serves them here).
+      - Live active-exam updates use WebSocket/SSE (see the /realtime section),
+        layered on top of these REST resources.
+
+servers:
+  - url: https://api.rabdan.example/v1
+    description: Production (placeholder — backend to confirm)
+  - url: http://localhost:8080/v1
+    description: Local development
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+  - name: Exams
+  - name: Incidents
+  - name: Export
+
+paths:
+  # ---------------------------------------------------------------------------
+  # Auth
+  # ---------------------------------------------------------------------------
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Authenticate a proctor/admin and issue a token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get the current authenticated user
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ---------------------------------------------------------------------------
+  # Exams
+  # ---------------------------------------------------------------------------
+  /exams:
+    get:
+      tags: [Exams]
+      summary: List exams (active or past)
+      description: >
+        Feeds the exam list page. Frontend requests one status at a time
+        (Active tab / Past tab). `open` and `total` are incident counts the UI
+        shows as badges.
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [active, past]
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Page of exam summaries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamSummaryPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /exams/{examId}:
+    get:
+      tags: [Exams]
+      summary: Get a single exam's detail/metadata
+      description: Feeds the workspace header (title, room, window, session state, student count).
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+      responses:
+        '200':
+          description: Exam detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------------------
+  # Incidents
+  # ---------------------------------------------------------------------------
+  /exams/{examId}/incidents:
+    get:
+      tags: [Incidents]
+      summary: List incidents for an exam
+      description: >
+        Feeds the incidents data table in the exam workspace. The frontend does
+        its own client-side sort/filter/paginate today, so returning the full
+        set per exam is acceptable initially; server-side pagination params are
+        provided for scale.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+        - name: status
+          in: query
+          required: false
+          description: Optional filter by review status.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/IncidentStatus'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Page of incidents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentPage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /exams/{examId}/incidents/{incidentId}:
+    get:
+      tags: [Incidents]
+      summary: Get a single incident with evidence
+      description: >
+        Feeds the incident detail dialog, including the camera-still evidence
+        image reference and any richer metadata not needed in the table.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+        - $ref: '#/components/parameters/IncidentId'
+      responses:
+        '200':
+          description: Incident detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /exams/{examId}/incidents/{incidentId}/status:
+    patch:
+      tags: [Incidents]
+      summary: Change one incident's review status
+      description: >
+        Confirm / discard / restore / reopen. The UI transitions:
+        open -> confirmed | discarded; confirmed -> discarded; discarded -> open (restore);
+        (past) confirmed/discarded -> open (reopen). Backend should record who
+        changed it and when for the audit trail.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+        - $ref: '#/components/parameters/IncidentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentStatusUpdate'
+      responses:
+        '200':
+          description: Updated incident
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Incident'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Illegal status transition (e.g. editing a finalized past exam).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /exams/{examId}/incidents:status:
+    patch:
+      tags: [Incidents]
+      summary: Bulk-change status for multiple incidents
+      description: Feeds the bulk Confirm / Discard actions on selected table rows.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkIncidentStatusUpdate'
+      responses:
+        '200':
+          description: Updated incidents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Incident'
+                required: [updated]
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ---------------------------------------------------------------------------
+  # Export
+  # ---------------------------------------------------------------------------
+  /exams/{examId}/incidents/{incidentId}/proof:
+    post:
+      tags: [Export]
+      summary: Generate a proof export for a single incident
+      description: >
+        Backing the "Export proof" action in the detail dialog. Returns a
+        reference to a generated artifact (e.g. a signed PDF). Generation may be
+        async — see the `status` field.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+        - $ref: '#/components/parameters/IncidentId'
+      responses:
+        '202':
+          description: Export accepted/generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportJob'
+
+  /exams/{examId}/incidents:export:
+    post:
+      tags: [Export]
+      summary: Export a selection of incidents as a table
+      description: Backing the "Export selected / Export table" action.
+      parameters:
+        - $ref: '#/components/parameters/ExamId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                incidentIds:
+                  type: array
+                  items: { type: string }
+                  description: Empty/omitted means export the full filtered set (TODO confirm).
+                format:
+                  type: string
+                  enum: [csv, xlsx, pdf]
+                  default: csv
+              required: [format]
+      responses:
+        '202':
+          description: Export accepted/generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportJob'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ExamId:
+      name: examId
+      in: path
+      required: true
+      schema: { type: string }
+    IncidentId:
+      name: incidentId
+      in: path
+      required: true
+      schema: { type: string }
+    Page:
+      name: page
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid token
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    # --- Auth ---------------------------------------------------------------
+    LoginRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+      required: [email, password]
+      description: TODO confirm auth mechanism (password vs SSO/OIDC).
+
+    LoginResponse:
+      type: object
+      properties:
+        token: { type: string, description: Bearer token (JWT). }
+        expiresAt: { type: string, format: date-time }
+        user: { $ref: '#/components/schemas/User' }
+      required: [token, user]
+
+    User:
+      type: object
+      properties:
+        userId: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        picture: { type: string, nullable: true, description: Avatar URL, may be empty. }
+        roles:
+          type: array
+          items: { type: string }
+          description: TODO define roles (e.g. proctor, admin) and their permissions.
+      required: [userId, name, email]
+
+    # --- Exams --------------------------------------------------------------
+    ExamStatus:
+      type: string
+      enum: [active, past]
+
+    ExamSummary:
+      type: object
+      description: Card shown in the exam list. Mirrors the UI's ExamSummary.
+      properties:
+        id: { type: string }
+        title: { type: string, example: 'Calculus II · Final' }
+        room: { type: string, example: 'Hall B' }
+        status: { $ref: '#/components/schemas/ExamStatus' }
+        live:
+          type: boolean
+          description: True while a session is in progress (active exams only).
+        startsAt: { type: string, format: date-time }
+        endsAt: { type: string, format: date-time }
+        totalIncidents:
+          type: integer
+          description: UI `total` badge.
+        openIncidents:
+          type: integer
+          description: UI `open` badge.
+      required: [id, title, room, status, startsAt, endsAt, totalIncidents, openIncidents]
+
+    ExamDetail:
+      allOf:
+        - $ref: '#/components/schemas/ExamSummary'
+        - type: object
+          properties:
+            studentCount:
+              type: integer
+              description: UI header "students" count.
+            cameras:
+              type: array
+              description: Cameras covering this exam (source of `Incident.camera`).
+              items: { $ref: '#/components/schemas/Camera' }
+          required: [studentCount]
+
+    Camera:
+      type: object
+      properties:
+        id: { type: string, example: 'cam-04' }
+        label: { type: string, nullable: true, example: 'Front-left' }
+      required: [id]
+
+    # --- Incidents ----------------------------------------------------------
+    ViolationType:
+      type: string
+      enum: [phone, adjacent]
+      description: >
+        `phone` = phone use (1 subject). `adjacent` = adjacent-student
+        interaction (2 subjects). Extensible — backend may add types; frontend
+        renders unknown types generically.
+
+    IncidentStatus:
+      type: string
+      enum: [open, confirmed, discarded]
+
+    Subject:
+      type: object
+      description: >
+        A person implicated in an incident. `phone` has 1 subject; `adjacent`
+        has 2. A null studentId + null name means "unidentified" (the CV
+        pipeline saw a person it could not resolve to a roster student).
+      properties:
+        studentId: { type: string, nullable: true }
+        name: { type: string, nullable: true }
+      required: [studentId, name]
+
+    Incident:
+      type: object
+      description: >
+        Row in the incidents table. NOTE: differs from the current UI mock in
+        that `occurredAt` is a real timestamp (UI formats it) and `subjects` are
+        objects, not bare name strings.
+      properties:
+        id: { type: string, example: 'INC-04817' }
+        examId: { type: string }
+        type: { $ref: '#/components/schemas/ViolationType' }
+        occurredAt:
+          type: string
+          format: date-time
+          description: Detection time. UI renders as HH:MM:SS.
+        camera: { $ref: '#/components/schemas/Camera' }
+        subjects:
+          type: array
+          items: { $ref: '#/components/schemas/Subject' }
+          minItems: 1
+          maxItems: 2
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          nullable: true
+          description: >
+            CV model confidence 0..1. Null when not applicable. UI flags < 0.70
+            as low-confidence.
+        status: { $ref: '#/components/schemas/IncidentStatus' }
+        reviewedBy: { type: string, nullable: true, description: userId of last reviewer. }
+        reviewedAt: { type: string, format: date-time, nullable: true }
+      required: [id, examId, type, occurredAt, camera, subjects, confidence, status]
+
+    IncidentDetail:
+      allOf:
+        - $ref: '#/components/schemas/Incident'
+        - type: object
+          properties:
+            evidence:
+              type: array
+              description: Camera stills / clips backing the incident (shown in the detail dialog).
+              items: { $ref: '#/components/schemas/Evidence' }
+          required: [evidence]
+
+    Evidence:
+      type: object
+      properties:
+        kind: { type: string, enum: [still, clip] }
+        url: { type: string, description: Signed, time-limited URL to the media. }
+        capturedAt: { type: string, format: date-time }
+      required: [kind, url]
+
+    IncidentStatusUpdate:
+      type: object
+      properties:
+        status: { $ref: '#/components/schemas/IncidentStatus' }
+      required: [status]
+
+    BulkIncidentStatusUpdate:
+      type: object
+      properties:
+        incidentIds:
+          type: array
+          items: { type: string }
+          minItems: 1
+        status: { $ref: '#/components/schemas/IncidentStatus' }
+      required: [incidentIds, status]
+
+    # --- Export -------------------------------------------------------------
+    ExportJob:
+      type: object
+      properties:
+        jobId: { type: string }
+        status: { type: string, enum: [pending, ready, failed] }
+        downloadUrl:
+          type: string
+          nullable: true
+          description: Populated when status = ready. TODO confirm sync vs async.
+      required: [jobId, status]
+
+    # --- Pagination ---------------------------------------------------------
+    PageMeta:
+      type: object
+      properties:
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+      required: [page, pageSize, total]
+
+    ExamSummaryPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ExamSummary' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+      required: [data, meta]
+
+    IncidentPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Incident' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+      required: [data, meta]
+
+    # --- Errors -------------------------------------------------------------
+    Error:
+      type: object
+      description: >
+        Error envelope. The frontend httpClient throws `error.response.data`,
+        so this shape is what UI code catches. `message` is currently the only
+        field the UI reads.
+      properties:
+        message: { type: string }
+        code: { type: string, nullable: true }
+        details:
+          type: object
+          additionalProperties: true
+          nullable: true
+      required: [message]
