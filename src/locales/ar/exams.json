@@ -1,0 +1,132 @@
+{
+  "list": {
+    "title": "الاختبارات",
+    "subtitle": "راقب الجلسات المباشرة وراجع الحوادث المرصودة.",
+    "syncedJustNow": "تمت المزامنة · الآن",
+    "syncedAgo": "تمت المزامنة · {{ago}}",
+    "syncedAgoInitial": "قبل دقيقتين",
+    "syncing": "جارٍ المزامنة…",
+    "syncNow": "مزامنة الآن",
+    "notifications": "الإشعارات",
+    "tabs": {
+      "active": "نشطة ({{count}})",
+      "past": "سابقة ({{count}})"
+    },
+    "searchPlaceholder": "ابحث بالعنوان أو القاعة…",
+    "range": {
+      "all": "كل الفترات",
+      "last7": "آخر 7 أيام",
+      "last30": "آخر 30 يومًا"
+    },
+    "sort": {
+      "recent": "الأحدث أولًا",
+      "oldest": "الأقدم أولًا",
+      "incidents": "الأكثر حوادث"
+    },
+    "live": "مباشر",
+    "newIncidents": "حوادث جديدة",
+    "openCount": "{{count}} مفتوحة",
+    "noIncidents": "لا توجد حوادث",
+    "allReviewed": "✓ تمت مراجعة {{count}} بالكامل",
+    "totalCount": "{{count}} إجمالًا",
+    "empty": {
+      "title": "لا توجد اختبارات مطابقة لعوامل التصفية",
+      "description": "جرّب كلمة بحث مختلفة أو وسّع النطاق الزمني."
+    }
+  },
+  "workspace": {
+    "backToExams": "الاختبارات",
+    "syncedLive": "مزامنة · مباشر",
+    "recordsFinal": "السجلات نهائية",
+    "live": "مباشر",
+    "ended": "منتهٍ",
+    "studentsLabel": "طالبًا",
+    "openLabel": "مفتوحة",
+    "stillOpenTitle_one": "حادثة واحدة لا تزال بحاجة إلى مراجعة",
+    "stillOpenTitle_other": "{{count}} حوادث لا تزال بحاجة إلى مراجعة",
+    "stillOpenDescription": "ظلّت هذه الحوادث مفتوحة عند انتهاء الاختبار، ولا يزال بالإمكان معالجتها هنا بالكامل.",
+    "reviewOpen": "مراجعة المفتوحة",
+    "selectedCount": "{{count}} محددة",
+    "bulkConfirm": "تأكيد",
+    "bulkDiscard": "استبعاد",
+    "exportSelected": "تصدير المحدد",
+    "clearSelection": "مسح",
+    "totalLabel": "حادثة",
+    "searchPlaceholder": "ابحث بالمعرّف أو الطالب أو النوع…",
+    "empty": {
+      "title": "لا توجد حوادث مطابقة لعوامل التصفية الحالية",
+      "description": "عدّل البحث أو عوامل التصفية أعلاه."
+    },
+    "toast": {
+      "confirmed_one": "تم تأكيد حادثة واحدة",
+      "confirmed_other": "تم تأكيد {{count}} حوادث",
+      "discarded_one": "تم استبعاد حادثة واحدة",
+      "discarded_other": "تم استبعاد {{count}} حوادث",
+      "restored": "أُعيدت {{id}} إلى الحالة المفتوحة",
+      "proofExported": "تم تصدير {{id}} كإثبات PDF",
+      "tableExported": "تم تصدير جدول المخالفات · {{count}} صفوف"
+    }
+  },
+  "columns": {
+    "type": "النوع",
+    "incident": "الحادثة",
+    "subjects": "الطالب/الطلاب",
+    "confidence": "الثقة",
+    "status": "الحالة",
+    "selectAll": "تحديد الكل",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف"
+  },
+  "type": {
+    "phone": "رصد هاتف",
+    "adjacent": "طالبان متجاوران"
+  },
+  "status": {
+    "open": "مفتوحة",
+    "confirmed": "مؤكدة",
+    "discarded": "مستبعدة"
+  },
+  "subjects": {
+    "unidentified": "غير معرّف",
+    "identified": "معرّف",
+    "filterLabel": "الطلاب"
+  },
+  "actions": {
+    "confirm": "تأكيد المخالفة",
+    "discard": "استبعاد",
+    "reopen": "إعادة فتح",
+    "restore": "إعادة إلى مفتوحة",
+    "review": "مراجعة الحادثة",
+    "exportProof": "تصدير إثبات PDF"
+  },
+  "detail": {
+    "title": "مراجعة الحادثة",
+    "statusLabel": "الحالة",
+    "subjectLabel": "الطالب",
+    "subjectsPairLabel": "الطالبان · متجاوران",
+    "confidenceLabel": "ثقة الرصد",
+    "violation": "المخالفة",
+    "sourceCamera": "الكاميرا المصدر",
+    "timestamp": "الطابع الزمني",
+    "incidentId": "معرّف الحادثة",
+    "confirm": "تأكيد المخالفة",
+    "discard": "استبعاد",
+    "discardInstead": "استبعاد بدلًا من ذلك",
+    "restore": "إعادة إلى مفتوحة",
+    "exportProof": "تصدير كإثبات PDF"
+  },
+  "export": {
+    "title": "تصدير الأدلة",
+    "subtitleSelection_one": "حادثة واحدة محددة · {{exam}}",
+    "subtitleSelection_other": "{{count}} حوادث محددة · {{exam}}",
+    "statusesNote": "تظهر الحالات كتسميات في الجدول المصدَّر.",
+    "colType": "النوع",
+    "colTime": "الوقت",
+    "colSubjects": "الطالب/الطلاب",
+    "colStatus": "الحالة",
+    "footerCount_one": "حادثة واحدة · حزمة أدلة",
+    "footerCount_other": "{{count}} حوادث · حزمة أدلة",
+    "cancel": "إلغاء",
+    "exportTable": "تصدير جدول المخالفات"
+  }
+}

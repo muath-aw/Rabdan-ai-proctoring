@@ -6,7 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/react';
 
 import { queryClient } from '@api/config';
 import { ROUTER } from '@routes';
-import { AppDirectionProvider, ThemeProvider } from '@contexts';
+import { AppDirectionProvider, THEME_TYPES, ThemeProvider } from '@contexts';
 
 import './i18n';
 import './index.css';
@@ -14,7 +14,7 @@ import './index.css';
 export function renderApp(container: HTMLElement) {
   createRoot(container).render(
     <StrictMode>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme={THEME_TYPES.LIGHT}>
         <QueryClientProvider client={queryClient}>
           <AppDirectionProvider>
             <NuqsAdapter>

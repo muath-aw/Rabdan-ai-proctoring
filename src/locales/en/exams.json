@@ -1,0 +1,132 @@
+{
+  "list": {
+    "title": "Exams",
+    "subtitle": "Monitor live sessions and review captured incidents.",
+    "syncedJustNow": "Synced · just now",
+    "syncedAgo": "Synced · {{ago}}",
+    "syncedAgoInitial": "2 min ago",
+    "syncing": "Syncing…",
+    "syncNow": "Sync now",
+    "notifications": "Notifications",
+    "tabs": {
+      "active": "Active ({{count}})",
+      "past": "Past ({{count}})"
+    },
+    "searchPlaceholder": "Search by title or classroom…",
+    "range": {
+      "all": "All time",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days"
+    },
+    "sort": {
+      "recent": "Most recent first",
+      "oldest": "Oldest first",
+      "incidents": "Most incidents"
+    },
+    "live": "Live",
+    "newIncidents": "New incidents",
+    "openCount": "{{count}} open",
+    "noIncidents": "No incidents",
+    "allReviewed": "✓ All {{count}} reviewed",
+    "totalCount": "{{count}} total",
+    "empty": {
+      "title": "No exams match your filters",
+      "description": "Try a different search term or widen the date range."
+    }
+  },
+  "workspace": {
+    "backToExams": "Exams",
+    "syncedLive": "Synced · live",
+    "recordsFinal": "Records final",
+    "live": "Live",
+    "ended": "Ended",
+    "studentsLabel": "Students",
+    "openLabel": "Open",
+    "stillOpenTitle_one": "{{count}} incident still needs review",
+    "stillOpenTitle_other": "{{count}} incidents still need review",
+    "stillOpenDescription": "These remained Open when the exam ended. They are still fully triageable here.",
+    "reviewOpen": "Review open",
+    "selectedCount": "{{count}} selected",
+    "bulkConfirm": "Confirm",
+    "bulkDiscard": "Discard",
+    "exportSelected": "Export selected",
+    "clearSelection": "Clear",
+    "totalLabel": "incidents",
+    "searchPlaceholder": "Search ID, student, or type…",
+    "empty": {
+      "title": "No incidents match the current filters",
+      "description": "Adjust the search or filters above."
+    },
+    "toast": {
+      "confirmed_one": "{{count}} incident confirmed",
+      "confirmed_other": "{{count}} incidents confirmed",
+      "discarded_one": "{{count}} incident discarded",
+      "discarded_other": "{{count}} incidents discarded",
+      "restored": "{{id}} restored to open",
+      "proofExported": "Exported {{id}} as PDF proof",
+      "tableExported": "Exported violations table · {{count}} rows"
+    }
+  },
+  "columns": {
+    "type": "Type",
+    "incident": "Incident",
+    "subjects": "Student(s)",
+    "confidence": "Confidence",
+    "status": "Status",
+    "selectAll": "Select all",
+    "selectRow": "Select row",
+    "rowActions": "Row actions"
+  },
+  "type": {
+    "phone": "Phone detected",
+    "adjacent": "Adjacent students"
+  },
+  "status": {
+    "open": "Open",
+    "confirmed": "Confirmed",
+    "discarded": "Discarded"
+  },
+  "subjects": {
+    "unidentified": "Unidentified",
+    "identified": "Identified",
+    "filterLabel": "Students"
+  },
+  "actions": {
+    "confirm": "Confirm violation",
+    "discard": "Discard",
+    "reopen": "Reopen",
+    "restore": "Restore to open",
+    "review": "Review incident",
+    "exportProof": "Export PDF proof"
+  },
+  "detail": {
+    "title": "Incident review",
+    "statusLabel": "Status",
+    "subjectLabel": "Subject",
+    "subjectsPairLabel": "Subjects · adjacent pair",
+    "confidenceLabel": "Detection confidence",
+    "violation": "Violation",
+    "sourceCamera": "Source camera",
+    "timestamp": "Timestamp",
+    "incidentId": "Incident ID",
+    "confirm": "Confirm violation",
+    "discard": "Discard",
+    "discardInstead": "Discard instead",
+    "restore": "Restore to open",
+    "exportProof": "Export as PDF proof"
+  },
+  "export": {
+    "title": "Export evidence",
+    "subtitleSelection_one": "{{count}} incident selected · {{exam}}",
+    "subtitleSelection_other": "{{count}} incidents selected · {{exam}}",
+    "statusesNote": "Statuses appear as labels in the exported table.",
+    "colType": "Type",
+    "colTime": "Time",
+    "colSubjects": "Student(s)",
+    "colStatus": "Status",
+    "footerCount_one": "{{count}} incident · evidence package",
+    "footerCount_other": "{{count}} incidents · evidence package",
+    "cancel": "Cancel",
+    "exportTable": "Export violations table"
+  }
+}

@@ -11,6 +11,9 @@ const ComponentsGalleryPage = lazy(() => import('@pages/components/ComponentsGal
 const ComponentDetailPage = lazy(() => import('@pages/components/ComponentDetailPage'));
 const DashboardPage = lazy(() => import('@pages/dashboard/DashboardPage'));
 const MembersPage = lazy(() => import('@pages/members/MembersPage'));
+const ExamListPage = lazy(() => import('@pages/exams/ExamListPage'));
+const ActiveExamWorkspacePage = lazy(() => import('@pages/exams/ActiveExamWorkspacePage'));
+const PastExamWorkspacePage = lazy(() => import('@pages/exams/PastExamWorkspacePage'));
 
 export const router = createBrowserRouter([
   // Public routes
@@ -61,6 +64,18 @@ export const router = createBrowserRouter([
           {
             path: FULL_ROUTES_PATH.MEMBERS.INDEX,
             element: <MembersPage />,
+          },
+          {
+            path: FULL_ROUTES_PATH.EXAMS.INDEX,
+            element: <ExamListPage />,
+          },
+          {
+            path: FULL_ROUTES_PATH.EXAMS.ACTIVE,
+            element: <ActiveExamWorkspacePage />,
+          },
+          {
+            path: FULL_ROUTES_PATH.EXAMS.PAST,
+            element: <PastExamWorkspacePage />,
           },
           {
             path: FULL_ROUTES_PATH.SETTINGS.INDEX,
