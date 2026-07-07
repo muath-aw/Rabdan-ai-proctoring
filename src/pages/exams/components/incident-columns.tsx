@@ -1,6 +1,7 @@
 import type { ColumnDef, FilterFn } from '@tanstack/react-table';
 
 import { Button, Checkbox, DropdownMenu } from '@components/ui';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -165,40 +166,36 @@ export const buildIncidentColumns = (t: TranslateFn, handlers: IncidentHandlers)
             </DropdownMenu.Trigger>
 
             <DropdownMenu.Content align="end">
-              {incident.status === 'open' && (
-                <>
-                  <DropdownMenu.Item onSelect={() => handlers.onConfirm(incident.id)}>
-                    <Check size={14} />
-                    {t('actions.confirm')}
-                  </DropdownMenu.Item>
+              <Conditional.If condition={incident.status === 'open'}>
+                <DropdownMenu.Item onSelect={() => handlers.onConfirm(incident.id)}>
+                  <Check size={14} />
+                  {t('actions.confirm')}
+                </DropdownMenu.Item>
 
-                  <DropdownMenu.Item onSelect={() => handlers.onDiscard(incident.id)}>
-                    <X size={14} />
-                    {t('actions.discard')}
-                  </DropdownMenu.Item>
-                </>
-              )}
+                <DropdownMenu.Item onSelect={() => handlers.onDiscard(incident.id)}>
+                  <X size={14} />
+                  {t('actions.discard')}
+                </DropdownMenu.Item>
+              </Conditional.If>
 
-              {incident.status === 'confirmed' && (
-                <>
-                  <DropdownMenu.Item onSelect={() => handlers.onReopen(incident.id)}>
-                    <RotateCcw size={14} />
-                    {t('actions.reopen')}
-                  </DropdownMenu.Item>
+              <Conditional.If condition={incident.status === 'confirmed'}>
+                <DropdownMenu.Item onSelect={() => handlers.onReopen(incident.id)}>
+                  <RotateCcw size={14} />
+                  {t('actions.reopen')}
+                </DropdownMenu.Item>
 
-                  <DropdownMenu.Item onSelect={() => handlers.onDiscard(incident.id)}>
-                    <X size={14} />
-                    {t('actions.discard')}
-                  </DropdownMenu.Item>
-                </>
-              )}
+                <DropdownMenu.Item onSelect={() => handlers.onDiscard(incident.id)}>
+                  <X size={14} />
+                  {t('actions.discard')}
+                </DropdownMenu.Item>
+              </Conditional.If>
 
-              {incident.status === 'discarded' && (
+              <Conditional.If condition={incident.status === 'discarded'}>
                 <DropdownMenu.Item onSelect={() => handlers.onRestore(incident.id)}>
                   <RotateCcw size={14} />
                   {t('actions.restore')}
                 </DropdownMenu.Item>
-              )}
+              </Conditional.If>
 
               <DropdownMenu.Separator />
 

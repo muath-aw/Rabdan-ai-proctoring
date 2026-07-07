@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import {
   getCoreRowModel,
@@ -7,11 +7,13 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type Row,
   useReactTable,
 } from '@tanstack/react-table';
 
 import { Alert, Button } from '@components/ui';
 import { DataTable } from '@components/tables';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation, useToast } from '@hooks/shared';
 
@@ -31,6 +33,8 @@ type ExamWorkspacePageProps = {
   mode: WorkspaceMode;
 };
 
+type BulkStatus = Extract<IncidentStatus, 'confirmed' | 'discarded'>;
+
 function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
   const { t } = useAppTranslation('exams');
   const { toast } = useToast();
@@ -39,9 +43,9 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
 
-  const setStatus = (id: string, status: IncidentStatus) => {
+  const setStatus = useCallback((id: string, status: IncidentStatus) => {
     setIncidents((current) => current.map((incident) => (incident.id === id ? { ...incident, status } : incident)));
-  };
+  }, []);
 
   const handlers: IncidentHandlers = useMemo(
     () => ({
@@ -52,18 +56,13 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
       onReview: (id) => setDetailId(id),
       onProof: (id) => toast({ title: t('workspace.toast.proofExported', { id }), variant: 'success' }),
     }),
-    [t, toast],
+    [setStatus, t, toast],
   );
 
   const columns = useMemo(() => buildIncidentColumns(t, handlers), [t, handlers]);
 
-  const table = useReactTable<Incident>({
-    data: incidents,
-    columns,
-    enableRowSelection: true,
-    enableGlobalFilter: true,
-    enableSortingRemoval: true,
-    globalFilterFn: (row, _columnId, filterValue) => {
+  const globalFilterFn = useCallback(
+    (row: Row<Incident>, _columnId: string, filterValue: string) => {
       if (!filterValue) return true;
 
       const incident = row.original;
@@ -73,6 +72,16 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
 
       return haystack.includes(String(filterValue).toLowerCase());
     },
+    [t],
+  );
+
+  const table = useReactTable<Incident>({
+    data: incidents,
+    columns,
+    enableRowSelection: true,
+    enableGlobalFilter: true,
+    enableSortingRemoval: true,
+    globalFilterFn,
     initialState: { pagination: { pageSize: 8 } },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -82,27 +91,55 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const openCount = incidents.filter((incident) => incident.status === 'open').length;
-  const selectedIncidents = table.getSelectedRowModel().rows.map((row) => row.original);
-  const detailIncident = detailId ? (incidents.find((incident) => incident.id === detailId) ?? null) : null;
+  const openCount = useMemo(
+    () => incidents.filter((incident) => incident.status === 'open').length,
+    [incidents],
+  );
+
+  const selectedIncidents = useMemo(
+    () => table.getSelectedRowModel().rows.map((row) => row.original),
+    // getSelectedRowModel changes reference when selection state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [table.getState().rowSelection, incidents],
+  );
+
+  const detailIncident = useMemo(
+    () => (detailId ? (incidents.find((incident) => incident.id === detailId) ?? null) : null),
+    [detailId, incidents],
+  );
 
   const exportSubtitle = t('export.subtitleSelection', { count: selectedIncidents.length, exam: EXAM_META.title });
 
-  const applyBulk = (status: Extract<IncidentStatus, 'confirmed' | 'discarded'>) => {
-    selectedIncidents.forEach((incident) => setStatus(incident.id, status));
-    toast({
-      title: t(status === 'confirmed' ? 'workspace.toast.confirmed' : 'workspace.toast.discarded', { count: selectedIncidents.length }),
-      variant: 'success',
-    });
-    table.resetRowSelection();
-  };
+  const applyBulk = useCallback(
+    (status: BulkStatus) => {
+      selectedIncidents.forEach((incident) => setStatus(incident.id, status));
+      toast({
+        title: t(status === 'confirmed' ? 'workspace.toast.confirmed' : 'workspace.toast.discarded', { count: selectedIncidents.length }),
+        variant: 'success',
+      });
+      table.resetRowSelection();
+    },
+    [selectedIncidents, setStatus, t, table, toast],
+  );
 
-  const exportTable = () => {
+  const handleConfirmAll = useCallback(() => applyBulk('confirmed'), [applyBulk]);
+  const handleDiscardAll = useCallback(() => applyBulk('discarded'), [applyBulk]);
+  const handleOpenExport = useCallback(() => setExportOpen(true), []);
+  const handleCloseExport = useCallback(() => setExportOpen(false), []);
+  const handleClearSelection = useCallback(() => table.resetRowSelection(), [table]);
+  const handleReviewOpen = useCallback(() => table.getColumn('status')?.setFilterValue(['open']), [table]);
+  const handleCloseDetail = useCallback(() => setDetailId(null), []);
+  const handleRowClick = useCallback((row: Row<Incident>) => setDetailId(row.original.id), []);
+  const getRowClassName = useCallback((row: Row<Incident>) => (row.original.status === 'discarded' ? 'opacity-60' : ''), []);
+
+  const exportTable = useCallback(() => {
     toast({ title: t('workspace.toast.tableExported', { count: selectedIncidents.length }), variant: 'success' });
     setExportOpen(false);
-  };
+  }, [selectedIncidents.length, t, toast]);
 
   const isPast = mode === 'past';
+  const hasSelection = selectedIncidents.length > 0;
+  const hasStillOpen = isPast && openCount > 0;
 
   return (
     <main className="flex h-full min-h-0 flex-col gap-4">
@@ -115,66 +152,66 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
         </Button>
 
         <div className="text-muted-foreground flex items-center gap-2 text-sm">
-          {isPast ? (
-            <>
+          <Conditional>
+            <Conditional.If condition={isPast}>
               <Lock size={13} />
               {t('workspace.recordsFinal')}
-            </>
-          ) : (
-            <>
+            </Conditional.If>
+
+            <Conditional.Else>
               <span className="bg-success inline-block size-1.75 rounded-full" />
               {t('workspace.syncedLive')}
-            </>
-          )}
+            </Conditional.Else>
+          </Conditional>
         </div>
       </div>
 
       <ExamHeader mode={mode} openCount={openCount} />
 
-      {isPast && openCount > 0 && (
+      <Conditional.If condition={hasStillOpen}>
         <Alert variant="warning" className="grid-cols-[auto_1fr_auto]">
           <TriangleAlert size={18} />
           <Alert.Title>{t('workspace.stillOpenTitle', { count: openCount })}</Alert.Title>
           <Alert.Description>{t('workspace.stillOpenDescription')}</Alert.Description>
 
           <div className="col-start-3 row-span-2 row-start-1 self-center">
-            <Button variant="outline" size="sm" onClick={() => table.getColumn('status')?.setFilterValue(['open'])}>
+            <Button variant="outline" size="sm" onClick={handleReviewOpen}>
               {t('workspace.reviewOpen')}
             </Button>
           </div>
         </Alert>
-      )}
+      </Conditional.If>
 
-      {selectedIncidents.length > 0 && (
+      <Conditional.If condition={hasSelection}>
         <div className="bg-foreground text-background flex items-center justify-between gap-4 rounded-xl px-4 py-2.5">
           <span className="text-sm font-medium">{t('workspace.selectedCount', { count: selectedIncidents.length })}</span>
 
           <div className="flex items-center gap-2">
-            <Button variant="success" size="sm" onClick={() => applyBulk('confirmed')}>
+            <Button variant="success" size="sm" onClick={handleConfirmAll}>
               <Check size={14} />
               {t('workspace.bulkConfirm')}
             </Button>
 
-            <Button variant="outline-muted" size="sm" onClick={() => applyBulk('discarded')}>
+            <Button variant="outline-muted" size="sm" onClick={handleDiscardAll}>
               {t('workspace.bulkDiscard')}
             </Button>
 
-            <Button variant="default" size="sm" onClick={() => setExportOpen(true)}>
+            <Button variant="default" size="sm" onClick={handleOpenExport}>
               <Download size={14} />
               {t('workspace.exportSelected')}
             </Button>
 
-            <Button variant="ghost" size="sm" className="text-background" onClick={() => table.resetRowSelection()}>
+            <Button variant="ghost" size="sm" className="text-background" onClick={handleClearSelection}>
               {t('workspace.clearSelection')}
             </Button>
           </div>
         </div>
-      )}
+      </Conditional.If>
 
       <DataTable
         table={table}
-        onRowClick={(row) => setDetailId(row.original.id)}
-        getRowClassName={(row) => (row.original.status === 'discarded' ? 'opacity-60' : '')}
+        onRowClick={handleRowClick}
+        getRowClassName={getRowClassName}
         className="min-h-0 flex-1"
       >
         <DataTable.Toolbar totalCount={table.getFilteredRowModel().rows.length} totalLabel={t('workspace.totalLabel')} placeholder={t('workspace.searchPlaceholder')} />
@@ -186,14 +223,14 @@ function ExamWorkspacePage({ mode }: ExamWorkspacePageProps) {
 
       <IncidentDetailDialog
         incident={detailIncident}
-        onClose={() => setDetailId(null)}
+        onClose={handleCloseDetail}
         onConfirm={handlers.onConfirm}
         onDiscard={handlers.onDiscard}
         onRestore={handlers.onRestore}
         onProof={handlers.onProof}
       />
 
-      <ExportDialog open={exportOpen} items={selectedIncidents} subtitle={exportSubtitle} onClose={() => setExportOpen(false)} onExport={exportTable} />
+      <ExportDialog open={exportOpen} items={selectedIncidents} subtitle={exportSubtitle} onClose={handleCloseExport} onExport={exportTable} />
     </main>
   );
 }

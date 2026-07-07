@@ -1,4 +1,5 @@
 import { Badge } from '@components/ui';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -15,8 +16,9 @@ export const STATUS_BADGE_VARIANT: Record<IncidentStatus, 'warning' | 'success' 
   discarded: 'muted',
 };
 
-/** Placeholder texture standing in for the captured camera still. */
-const STILL_TEXTURE = 'repeating-linear-gradient(45deg, #EFEEEC, #EFEEEC 6px, #E5E2DC 6px, #E5E2DC 12px)';
+/** Placeholder texture standing in for the captured camera still — theme-aware via CSS variables. */
+const STILL_TEXTURE = 'repeating-linear-gradient(45deg, var(--muted-100), var(--muted-100) 6px, var(--muted-200) 6px, var(--muted-200) 12px)';
+const STILL_TEXTURE_LARGE = 'repeating-linear-gradient(45deg, var(--muted-100), var(--muted-100) 9px, var(--muted-200) 9px, var(--muted-200) 18px)';
 
 export function StatusBadge({ status }: { status: IncidentStatus }) {
   const { t } = useAppTranslation('exams');
@@ -41,7 +43,7 @@ export function TypeChip({ type }: { type: ViolationType }) {
 export function Thumbnail({ cam }: { cam: string }) {
   return (
     <div className="border-border relative h-10 w-15 shrink-0 overflow-hidden rounded-md border" style={{ backgroundImage: STILL_TEXTURE }}>
-      <span className="text-muted-400 bg-background absolute start-1 bottom-1 rounded px-1 font-mono text-[9px]">{cam}</span>
+      <span className="text-muted-400 bg-background absolute start-1 bottom-1 rounded px-1 font-mono text-2xs">{cam}</span>
     </div>
   );
 }
@@ -62,18 +64,22 @@ export function SubjectsCell({ subjects }: { subjects: (string | null)[] }) {
 
   return (
     <div className="flex items-center gap-2 whitespace-normal">
-      {isPair && <Users size={15} className="text-muted-400 shrink-0" />}
+      <Conditional.If condition={isPair}>
+        <Users size={15} className="text-muted-400 shrink-0" />
+      </Conditional.If>
 
       <div className="flex min-w-0 flex-col gap-1">
-        {subjects.map((subject, index) =>
-          subject ? (
-            <span key={index} className="text-foreground text-sm leading-tight font-medium">
-              {subject}
-            </span>
-          ) : (
-            <UnidentifiedPill key={index} />
-          ),
-        )}
+        {subjects.map((subject, index) => (
+          <Conditional key={`${index}-${subject ?? 'unidentified'}`}>
+            <Conditional.If condition={!!subject}>
+              <span className="text-foreground text-sm leading-tight font-medium">{subject}</span>
+            </Conditional.If>
+
+            <Conditional.Else>
+              <UnidentifiedPill />
+            </Conditional.Else>
+          </Conditional>
+        ))}
       </div>
     </div>
   );
@@ -98,17 +104,14 @@ export function ConfidenceCell({ conf }: { conf: number | null }) {
 /** Larger still used by the detail dialog. */
 export function CameraStill({ cam, time, type }: { cam: string; time: string; type: ViolationType }) {
   return (
-    <div
-      className="border-border relative h-55 overflow-hidden rounded-xl border"
-      style={{ backgroundImage: 'repeating-linear-gradient(45deg, #EFEEEC, #EFEEEC 9px, #E5E2DC 9px, #E5E2DC 18px)' }}
-    >
+    <div className="border-border relative h-55 overflow-hidden rounded-xl border" style={{ backgroundImage: STILL_TEXTURE_LARGE }}>
       <div className="absolute start-3 top-3">
         <TypeChip type={type} />
       </div>
 
       <div className="text-muted-foreground bg-background absolute start-3 bottom-3 flex items-center gap-2 rounded px-2 py-1 font-mono text-xs">
         {cam}
-        <span className="text-muted-300">·</span>
+        <span className="text-muted-300" aria-hidden="true">·</span>
         {time}
       </div>
     </div>

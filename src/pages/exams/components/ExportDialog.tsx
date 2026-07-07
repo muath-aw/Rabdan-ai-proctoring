@@ -1,4 +1,5 @@
 import { Button, Dialog, Table } from '@components/ui';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -22,7 +23,7 @@ function ExportDialog({ open, items, subtitle, onClose, onExport }: ExportDialog
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      {open && (
+      <Conditional.If condition={open}>
         <Dialog.Panel className="max-w-2xl">
           <Dialog.Header>
             <Dialog.Title>{t('export.title')}</Dialog.Title>
@@ -77,7 +78,7 @@ function ExportDialog({ open, items, subtitle, onClose, onExport }: ExportDialog
             </div>
           </Dialog.Footer>
         </Dialog.Panel>
-      )}
+      </Conditional.If>
     </Dialog>
   );
 }

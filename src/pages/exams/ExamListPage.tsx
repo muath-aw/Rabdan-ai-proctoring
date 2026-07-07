@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Badge, Button, Input, Select, Tabs } from '@components/ui';
 import { ActionPanel, BlankSlate } from '@components/shared';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -20,6 +21,7 @@ const SYNC_DURATION_MS = 1100;
 type PastRange = 'all' | '7' | '30';
 type PastSort = 'recent' | 'oldest' | 'incidents';
 
+// Cutoffs are packed as yyyymmdd integers matching `ExamSummary.ts` for past exams.
 const RANGE_CUTOFF: Record<Exclude<PastRange, 'all'>, number> = {
   '7': 20260622,
   '30': 20260530,
@@ -34,9 +36,38 @@ function ExamListPage() {
   const [sort, setSort] = useState<PastSort>('recent');
   const [syncing, setSyncing] = useState(false);
   const [syncedJustNow, setSyncedJustNow] = useState(false);
-  const syncTimer = useRef<ReturnType<typeof setTimeout>>();
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const handleSync = () => {
+  const isPast = tab === 'past';
+
+  const exams = useMemo<ExamSummary[]>(() => {
+    if (!isPast) {
+      return [...ACTIVE_EXAMS].sort((a, b) => a.ts - b.ts);
+    }
+
+    const query = search.trim().toLowerCase();
+    const filtered = PAST_EXAMS.filter((exam) => {
+      if (query && !`${exam.title} ${exam.room}`.toLowerCase().includes(query)) return false;
+      if (range !== 'all' && exam.ts < RANGE_CUTOFF[range]) return false;
+      return true;
+    });
+
+    return filtered.sort((a, b) => {
+      if (sort === 'oldest') return a.ts - b.ts;
+      if (sort === 'incidents') return b.total - a.total;
+      return b.ts - a.ts;
+    });
+  }, [isPast, search, range, sort]);
+
+  const workspacePath = isPast ? FULL_ROUTES_PATH.EXAMS.PAST : FULL_ROUTES_PATH.EXAMS.ACTIVE;
+
+  const syncLabel = useMemo(() => {
+    if (syncing) return t('list.syncing');
+    if (syncedJustNow) return t('list.syncedJustNow');
+    return t('list.syncedAgo', { ago: t('list.syncedAgoInitial') });
+  }, [syncing, syncedJustNow, t]);
+
+  const handleSync = useCallback(() => {
     if (syncing) return;
 
     setSyncing(true);
@@ -45,24 +76,16 @@ function ExamListPage() {
       setSyncing(false);
       setSyncedJustNow(true);
     }, SYNC_DURATION_MS);
-  };
+  }, [syncing]);
 
-  const isPast = tab === 'past';
+  useEffect(() => {
+    return () => clearTimeout(syncTimer.current);
+  }, []);
 
-  let exams: ExamSummary[] = isPast ? [...PAST_EXAMS] : [...ACTIVE_EXAMS];
-
-  if (isPast) {
-    const query = search.trim().toLowerCase();
-    if (query) exams = exams.filter((exam) => `${exam.title} ${exam.room}`.toLowerCase().includes(query));
-    if (range !== 'all') exams = exams.filter((exam) => exam.ts >= RANGE_CUTOFF[range]);
-    exams.sort((a, b) => (sort === 'oldest' ? a.ts - b.ts : sort === 'incidents' ? b.total - a.total : b.ts - a.ts));
-  } else {
-    exams.sort((a, b) => a.ts - b.ts);
-  }
-
-  const workspacePath = isPast ? FULL_ROUTES_PATH.EXAMS.PAST : FULL_ROUTES_PATH.EXAMS.ACTIVE;
-
-  const syncLabel = syncing ? t('list.syncing') : syncedJustNow ? t('list.syncedJustNow') : t('list.syncedAgo', { ago: t('list.syncedAgoInitial') });
+  const handleTabChange = (value: string) => setTab(value);
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
+  const handleRangeChange = (value: string) => setRange(value as PastRange);
+  const handleSortChange = (value: string) => setSort(value as PastSort);
 
   return (
     <main className="flex flex-col gap-4">
@@ -87,35 +110,35 @@ function ExamListPage() {
             <Button variant="outline" size="icon" aria-label={t('list.notifications')}>
               <Bell size={17} />
             </Button>
-            <span className="bg-destructive text-primary-foreground border-canvas absolute -end-1.5 -top-1.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full border-2 px-1 text-[11px]">
+            <span className="bg-destructive text-primary-foreground border-canvas absolute -end-1.5 -top-1.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full border-2 px-1 text-2xs">
               5
             </span>
           </div>
         </ActionPanel.Actions>
       </ActionPanel>
 
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs value={tab} onValueChange={handleTabChange}>
         <Tabs.List>
           <Tabs.Trigger value="active">{t('list.tabs.active', { count: ACTIVE_EXAMS.length })}</Tabs.Trigger>
           <Tabs.Trigger value="past">{t('list.tabs.past', { count: PAST_EXAMS.length })}</Tabs.Trigger>
         </Tabs.List>
       </Tabs>
 
-      {isPast && (
+      <Conditional.If condition={isPast}>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative min-w-55 max-w-90 flex-1">
             <Search size={16} className="text-muted-400 absolute start-3 top-1/2 -translate-y-1/2" />
             <Input
               aria-label={t('list.searchPlaceholder')}
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={handleSearchChange}
               placeholder={t('list.searchPlaceholder')}
               className="w-full ps-9"
             />
           </div>
 
           <div className="w-42">
-            <Select value={range} onValueChange={(value) => setRange(value as PastRange)}>
+            <Select value={range} onValueChange={handleRangeChange}>
               <Select.Trigger>
                 <Select.Value placeholder={t('list.range.all')} />
                 <Select.Icon />
@@ -136,7 +159,7 @@ function ExamListPage() {
           </div>
 
           <div className="w-47">
-            <Select value={sort} onValueChange={(value) => setSort(value as PastSort)}>
+            <Select value={sort} onValueChange={handleSortChange}>
               <Select.Trigger>
                 <Select.Value placeholder={t('list.sort.recent')} />
                 <Select.Icon />
@@ -156,7 +179,7 @@ function ExamListPage() {
             </Select>
           </div>
         </div>
-      )}
+      </Conditional.If>
 
       <div className="flex flex-col gap-2.5">
         {exams.map((exam) => (
@@ -175,40 +198,34 @@ function ExamListPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-foreground font-semibold whitespace-nowrap">{exam.title}</span>
 
-                  {exam.live && (
+                  <Conditional.If condition={!!exam.live}>
                     <Badge variant="destructive" size="sm" className="whitespace-nowrap [&_[data-slot=badge-dot]]:animate-live-pulse">
                       {t('list.live')}
                     </Badge>
-                  )}
+                  </Conditional.If>
 
-                  {!isPast && exam.open > 0 && (
+                  <Conditional.If condition={!isPast && exam.open > 0}>
                     <Badge variant="warning" size="sm" className="whitespace-nowrap">
                       {t('list.newIncidents')}
                     </Badge>
-                  )}
+                  </Conditional.If>
                 </div>
 
                 <div className="text-muted-foreground mt-1 flex items-center gap-2 text-sm whitespace-nowrap">
                   <span>{exam.room}</span>
-                  <span className="text-muted-300">·</span>
+                  <span className="text-muted-300" aria-hidden="true">·</span>
                   <span className="font-mono">{exam.when}</span>
                 </div>
               </div>
 
               <div className="flex shrink-0 flex-col items-end gap-1 whitespace-nowrap">
-                {exam.open > 0 && (
+                <Conditional.If condition={exam.open > 0}>
                   <Badge variant="warning" size="sm" className="whitespace-nowrap">
                     {t('list.openCount', { count: exam.open })}
                   </Badge>
-                )}
+                </Conditional.If>
 
-                <span className="text-muted-400 text-xs whitespace-nowrap">
-                  {exam.total === 0
-                    ? t('list.noIncidents')
-                    : exam.open === 0
-                      ? t('list.allReviewed', { count: exam.total })
-                      : t('list.totalCount', { count: exam.total })}
-                </span>
+                <ExamCountLabel exam={exam} />
               </div>
 
               <ChevronRight size={18} className="text-muted-300 shrink-0 rtl:rotate-180" />
@@ -226,6 +243,18 @@ function ExamListPage() {
       </div>
     </main>
   );
+}
+
+function ExamCountLabel({ exam }: { exam: ExamSummary }) {
+  const { t } = useAppTranslation('exams');
+
+  const label = exam.total === 0
+    ? t('list.noIncidents')
+    : exam.open === 0
+      ? t('list.allReviewed', { count: exam.total })
+      : t('list.totalCount', { count: exam.total });
+
+  return <span className="text-muted-400 text-xs whitespace-nowrap">{label}</span>;
 }
 
 export default ExamListPage;

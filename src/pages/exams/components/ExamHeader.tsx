@@ -1,4 +1,5 @@
 import { Badge } from '@components/ui';
+import { Conditional } from '@components/utils';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -23,23 +24,27 @@ function ExamHeader({ mode, openCount }: ExamHeaderProps) {
         <div className="mb-2 flex items-center gap-3">
           <h1 className="text-foreground text-xl font-semibold whitespace-nowrap">{EXAM_META.title}</h1>
 
-          {isLive ? (
-            <Badge variant="destructive" size="sm" className="whitespace-nowrap [&_[data-slot=badge-dot]]:animate-live-pulse">
-              {t('workspace.live')}
-            </Badge>
-          ) : (
-            <Badge variant="muted" size="sm" className="whitespace-nowrap">
-              <Lock size={11} />
-              {t('workspace.ended')}
-            </Badge>
-          )}
+          <Conditional>
+            <Conditional.If condition={isLive}>
+              <Badge variant="destructive" size="sm" className="whitespace-nowrap [&_[data-slot=badge-dot]]:animate-live-pulse">
+                {t('workspace.live')}
+              </Badge>
+            </Conditional.If>
+
+            <Conditional.Else>
+              <Badge variant="muted" size="sm" className="whitespace-nowrap">
+                <Lock size={11} />
+                {t('workspace.ended')}
+              </Badge>
+            </Conditional.Else>
+          </Conditional>
         </div>
 
         <div className="text-muted-foreground flex items-center gap-2 text-sm whitespace-nowrap">
           <span>{EXAM_META.room}</span>
-          <span className="text-muted-300">·</span>
+          <span className="text-muted-300" aria-hidden="true">·</span>
           <span className="font-mono">{EXAM_META.window}</span>
-          <span className="text-muted-300">·</span>
+          <span className="text-muted-300" aria-hidden="true">·</span>
           <span className="font-mono">{isLive ? EXAM_META.activeSession : EXAM_META.endedSession}</span>
         </div>
       </div>
