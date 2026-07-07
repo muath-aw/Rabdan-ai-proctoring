@@ -1,0 +1,73 @@
+import type { ElementType } from 'react';
+
+import { LayoutDashboard, Component, Settings, Users } from 'lucide-react';
+
+export type AppMenu = {
+  id: string;
+  path: string;
+  name?: string;
+  group?: string;
+  permission?: string;
+  permissions?: string[];
+  roles?: string[];
+  icon: ElementType;
+  submenu?: AppMenu[];
+};
+
+export const FULL_ROUTES_PATH = {
+  HOME: {
+    INDEX: '/',
+    DASHBOARD: '/dashboard',
+  },
+  AUTH: {
+    INDEX: '/auth',
+    LOGIN: '/auth/login',
+  },
+  COMPONENTS: {
+    INDEX: '/components',
+    DETAIL: '/components/:id',
+  },
+  SETTINGS: {
+    INDEX: '/settings',
+  },
+  MEMBERS: {
+    INDEX: '/members',
+  },
+  ROOT: {
+    INDEX: '..',
+  },
+} as const;
+
+/** Flattened route map used by breadcrumb/navigation helpers. */
+export const PLAIN_ROUTES = FULL_ROUTES_PATH;
+
+export const APP_MENU: AppMenu[] = [
+  {
+    id: 'dashboard',
+    path: FULL_ROUTES_PATH.HOME.DASHBOARD,
+    name: 'Dashboard',
+    group: 'main',
+    icon: LayoutDashboard,
+  },
+  {
+    id: 'components',
+    path: FULL_ROUTES_PATH.COMPONENTS.INDEX,
+    name: 'Components',
+    group: 'main',
+    icon: Component,
+  },
+  {
+    id: 'members',
+    path: FULL_ROUTES_PATH.MEMBERS.INDEX,
+    name: 'Members',
+    group: 'main',
+    icon: Users,
+  },
+  {
+    id: 'settings',
+    path: FULL_ROUTES_PATH.SETTINGS.INDEX,
+    name: 'Settings',
+    group: 'account',
+    icon: Settings,
+  },
+];

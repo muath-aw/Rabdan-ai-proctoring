@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "skills": {
+    "forge:add-icon": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/add-icon/SKILL.md",
+      "computedHash": "581016cbd325895fcc46cb6ed6fcce9878561e0fe96d90cfe9209b4e190d3c0a"
+    },
+    "forge:add-motion": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/add-motion/SKILL.md",
+      "computedHash": "95e07308e25dc0fd1cee9e4a1146141f4a0754f45d7f3430df63a377b3972b87"
+    },
+    "forge:add-translations": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/add-translations/SKILL.md",
+      "computedHash": "2b92f807731453cf2593ad6f39b2d85ad13ed0b1f4c311c44dc74fc7dfbedce6"
+    },
+    "forge:audit-a11y": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit-a11y/SKILL.md",
+      "computedHash": "2633b10f38bcd2a7244d6cdc3ad017e830c1473016f2f3013eb7923e930dd492"
+    },
+    "forge:audit-dark-mode": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit-dark-mode/SKILL.md",
+      "computedHash": "349fbe895e58759e1c4855f4ace08e57d260e649d73759f3a3c4081269cfa0d3"
+    },
+    "forge:audit-imports": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit-imports/SKILL.md",
+      "computedHash": "c2681297b79fe64afcdd57eff9f0977838d3b62354aed4cf3f109c2f4f9e0e37"
+    },
+    "forge:audit-rtl": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit-rtl/SKILL.md",
+      "computedHash": "aa530421b1310b00e382983899bfd8041b6efe267c3524e4dc6bb90f7e42eeae"
+    },
+    "forge:changelog": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/changelog/SKILL.md",
+      "computedHash": "615fec8331aa1c3585bab23f705582f08692416c7bd0ac045a7116f9c7d565f9"
+    },
+    "forge:create-api": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-api/SKILL.md",
+      "computedHash": "6fc5a96246b9578f0fa6e64a61f3a7b18364136dd0b81823af2ff6d5218677c7"
+    },
+    "forge:create-component": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-component/SKILL.md",
+      "computedHash": "dd667de7e038bbf107a6e5f4f828b2533414510eda72bc3e954796ff27414d5c"
+    },
+    "forge:create-context": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-context/SKILL.md",
+      "computedHash": "f88698628d52c56d5f5f7e9bf9a2ea084dc530b80734ffab4b1c021b97ec8bd7"
+    },
+    "forge:create-form": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-form/SKILL.md",
+      "computedHash": "8074b2b80e8b5919110849888b3aa257ac5dfec16563b8a3dee6857f7346bdf7"
+    },
+    "forge:create-page": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-page/SKILL.md",
+      "computedHash": "f940ac781f6932aa9322dc55a1899309ef7c73a0ef35f66c5858f9d1cf9d45dc"
+    },
+    "forge:create-table": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/create-table/SKILL.md",
+      "computedHash": "802bd767ba90254ac4c4faa6690b5c17b9b805e2dcf5acdaa6608ee87e2cf683"
+    },
+    "forge:debug-build": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/debug-build/SKILL.md",
+      "computedHash": "ada5912c731ccb3bd84b2aedb13c73ff849385719f75454eb53f8e3a8594b63f"
+    },
+    "forge:document-component": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/document-component/SKILL.md",
+      "computedHash": "e9da4e50fb61cf815cd9735efc152a0129ce39cedb31a654c733ed04e02d723a"
+    },
+    "forge:extract-component": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/extract-component/SKILL.md",
+      "computedHash": "cb0a6eb869e6ad648aee6166eb43f067af2b9948afb1d789b9cf96a3b3e967c7"
+    },
+    "forge:figma-to-code": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/figma-to-code/SKILL.md",
+      "computedHash": "ec4589f7fef6a1b894ea7e6a16bba2c4586284e3bd85af83ae7ffda0f9c3c9c2"
+    },
+    "forge:forge": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/forge/SKILL.md",
+      "computedHash": "66b94f4ecc19bafa5e6a19d782db47e78b56b9a820fb67fb7acc6da2cf70b587"
+    },
+    "forge:git-workflow": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/git-workflow/SKILL.md",
+      "computedHash": "fd2d9194ad5aa07eb03063767c92a4042bb2e3125c8f7e1db12fb3a650518519"
+    },
+    "forge:i18n-sync": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/i18n-sync/SKILL.md",
+      "computedHash": "8de3cd588ba9cbdd97dc0041d7503e0cdfbffdcd5f791848c36bf9a538b2eacb"
+    },
+    "forge:migrate-endpoint": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-endpoint/SKILL.md",
+      "computedHash": "c2a57a318950e20d0b14943a29c5f06b8dda1333a1d777709cd0243758fe2877"
+    },
+    "forge:refactor-to-standards": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/refactor-to-standards/SKILL.md",
+      "computedHash": "79e6c8a0bc980ba4b44bf7f3874c82965696f5d4a1c6829546bc5d6366200165"
+    },
+    "forge:review-code": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-code/SKILL.md",
+      "computedHash": "bd79672b24c667e348e5a5cd64ada0f172787f6ad3c2e6e895a45e77847af901"
+    },
+    "forge:scaffold-feature": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/scaffold-feature/SKILL.md",
+      "computedHash": "91249938e94ea859ce191d091e7bd50d2280b25a60cc3a65579c4c68637116a1"
+    },
+    "forge:super-security-review": {
+      "source": "mohammadsafia/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/super-security-review/SKILL.md",
+      "computedHash": "dbd7d4b9ffecccf747bad06ea18900489628aa8d3d164170588ee68b84ca8d8c"
+    }
+  }
+}
