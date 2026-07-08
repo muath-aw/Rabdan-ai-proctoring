@@ -4,7 +4,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { AuthGuard, AuthLayout, DashboardLayout, ErrorBoundary } from '@layouts';
 
 import { FULL_ROUTES_PATH } from './routes';
-import { LoginPlaceholder, NotFound, SettingsPlaceholder } from './RoutePlaceholders';
+import { LoginPlaceholder, NotFound } from './RoutePlaceholders';
 
 const HomePage = lazy(() => import('@pages/home/HomePage'));
 const ComponentsGalleryPage = lazy(() => import('@pages/components/ComponentsGalleryPage'));
@@ -14,6 +14,7 @@ const MembersPage = lazy(() => import('@pages/members/MembersPage'));
 const ExamListPage = lazy(() => import('@pages/exams/ExamListPage'));
 const ActiveExamWorkspacePage = lazy(() => import('@pages/exams/ActiveExamWorkspacePage'));
 const PastExamWorkspacePage = lazy(() => import('@pages/exams/PastExamWorkspacePage'));
+const SettingsPage = lazy(() => import('@pages/settings/SettingsPage'));
 
 export const router = createBrowserRouter([
   // Public routes
@@ -79,7 +80,7 @@ export const router = createBrowserRouter([
           },
           {
             path: FULL_ROUTES_PATH.SETTINGS.INDEX,
-            element: <SettingsPlaceholder />,
+            element: <SettingsPage />,
           },
         ],
       },

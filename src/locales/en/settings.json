@@ -1,0 +1,124 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage locations and cameras used across exams.",
+  "locations": {
+    "title": "Locations",
+    "subtitle": "Physical rooms or halls that host exams.",
+    "addAction": "Add location",
+    "totalLabel": "locations",
+    "searchPlaceholder": "Search locations…",
+    "columns": {
+      "name": "Name",
+      "code": "SIS code",
+      "description": "Description",
+      "cameraCount": "Cameras",
+      "createdAt": "Created",
+      "actions": "Actions"
+    },
+    "descriptionEmpty": "—",
+    "cameraCountLabel_one": "{{count}} camera",
+    "cameraCountLabel_other": "{{count}} cameras",
+    "empty": {
+      "title": "No locations yet",
+      "description": "Add a location to start assigning cameras to it."
+    },
+    "error": {
+      "title": "Couldn't load locations",
+      "description": "Something went wrong loading the locations list.",
+      "retry": "Retry"
+    },
+    "form": {
+      "createTitle": "Add location",
+      "editTitle": "Edit location",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Hall B",
+      "codeLabel": "SIS code",
+      "codePlaceholder": "e.g. HALL_B",
+      "codeHelp": "Must match exactly what the SIS sends for this room. Case-sensitive.",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Optional short note",
+      "submitCreate": "Create location",
+      "submitEdit": "Save changes",
+      "cancel": "Cancel"
+    },
+    "confirmDelete": {
+      "title": "Delete location?",
+      "description": "This can't be undone. \"{{name}}\" will be removed from your locations.",
+      "confirm": "Delete"
+    },
+    "toast": {
+      "created": "Location \"{{name}}\" added",
+      "updated": "Location \"{{name}}\" updated",
+      "deleted": "Location \"{{name}}\" deleted",
+      "duplicateName": "A location with this name already exists",
+      "duplicateCode": "A location with this SIS code already exists",
+      "inUse_one": "Cannot delete — {{count}} camera is assigned to this location",
+      "inUse_other": "Cannot delete — {{count}} cameras are assigned to this location",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "cameras": {
+    "title": "Cameras",
+    "subtitle": "Cameras registered to specific locations.",
+    "addAction": "Add camera",
+    "totalLabel": "cameras",
+    "searchPlaceholder": "Search cameras…",
+    "columns": {
+      "name": "Name",
+      "location": "Location",
+      "createdAt": "Created",
+      "actions": "Actions"
+    },
+    "locationMissing": "Unknown location",
+    "empty": {
+      "title": "No cameras yet",
+      "description": "Add a camera and link it to a location."
+    },
+    "emptyNoLocations": {
+      "title": "Add a location first",
+      "description": "Cameras must be linked to an existing location.",
+      "cta": "Add location"
+    },
+    "error": {
+      "title": "Couldn't load cameras",
+      "description": "Something went wrong loading the cameras list.",
+      "retry": "Retry"
+    },
+    "form": {
+      "createTitle": "Add camera",
+      "editTitle": "Edit camera",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. cam-04",
+      "locationLabel": "Location",
+      "locationPlaceholder": "Select a location",
+      "noLocations": "No locations available",
+      "submitCreate": "Create camera",
+      "submitEdit": "Save changes",
+      "cancel": "Cancel"
+    },
+    "confirmDelete": {
+      "title": "Delete camera?",
+      "description": "This can't be undone. \"{{name}}\" will be removed from your cameras.",
+      "confirm": "Delete"
+    },
+    "toast": {
+      "created": "Camera \"{{name}}\" added",
+      "updated": "Camera \"{{name}}\" updated",
+      "deleted": "Camera \"{{name}}\" deleted",
+      "duplicateName": "A camera with this name already exists in this location",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "nameMax": "Name must be 60 characters or fewer",
+    "codeRequired": "SIS code is required",
+    "codeMax": "SIS code must be 40 characters or fewer",
+    "descriptionMax": "Description must be 200 characters or fewer",
+    "locationRequired": "Location is required"
+  }
+}

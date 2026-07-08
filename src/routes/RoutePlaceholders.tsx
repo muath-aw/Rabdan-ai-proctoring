@@ -22,12 +22,6 @@ export function NotFound() {
   );
 }
 
-export function SettingsPlaceholder() {
-  const { t } = useAppTranslation('nav');
-
-  return <div className="text-foreground p-6 text-lg font-semibold">{t('settings')}</div>;
-}
-
 export function LoginPlaceholder() {
   const { t } = useAppTranslation('auth');
 

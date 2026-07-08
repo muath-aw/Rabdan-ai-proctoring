@@ -1,0 +1,124 @@
+{
+  "title": "الإعدادات",
+  "subtitle": "إدارة المواقع والكاميرات المستخدمة في الاختبارات.",
+  "locations": {
+    "title": "المواقع",
+    "subtitle": "القاعات أو الغرف التي تُقام فيها الاختبارات.",
+    "addAction": "إضافة موقع",
+    "totalLabel": "موقعًا",
+    "searchPlaceholder": "ابحث في المواقع…",
+    "columns": {
+      "name": "الاسم",
+      "code": "معرّف نظام SIS",
+      "description": "الوصف",
+      "cameraCount": "الكاميرات",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "descriptionEmpty": "—",
+    "cameraCountLabel_one": "كاميرا واحدة",
+    "cameraCountLabel_other": "{{count}} كاميرات",
+    "empty": {
+      "title": "لا توجد مواقع بعد",
+      "description": "أضف موقعًا لبدء ربط الكاميرات به."
+    },
+    "error": {
+      "title": "تعذّر تحميل المواقع",
+      "description": "حدث خطأ أثناء تحميل قائمة المواقع.",
+      "retry": "إعادة المحاولة"
+    },
+    "form": {
+      "createTitle": "إضافة موقع",
+      "editTitle": "تعديل الموقع",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: قاعة ب",
+      "codeLabel": "معرّف نظام SIS",
+      "codePlaceholder": "مثال: HALL_B",
+      "codeHelp": "يجب أن يطابق تمامًا ما يرسله نظام SIS لهذه القاعة (حساس لحالة الأحرف).",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "ملاحظة قصيرة اختيارية",
+      "submitCreate": "إنشاء الموقع",
+      "submitEdit": "حفظ التغييرات",
+      "cancel": "إلغاء"
+    },
+    "confirmDelete": {
+      "title": "حذف الموقع؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف \"{{name}}\" من المواقع.",
+      "confirm": "حذف"
+    },
+    "toast": {
+      "created": "تمت إضافة الموقع \"{{name}}\"",
+      "updated": "تم تحديث الموقع \"{{name}}\"",
+      "deleted": "تم حذف الموقع \"{{name}}\"",
+      "duplicateName": "يوجد موقع بهذا الاسم بالفعل",
+      "duplicateCode": "يوجد موقع بهذا المعرّف بالفعل",
+      "inUse_one": "لا يمكن الحذف — هناك كاميرا واحدة مرتبطة بهذا الموقع",
+      "inUse_other": "لا يمكن الحذف — هناك {{count}} كاميرات مرتبطة بهذا الموقع",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مجددًا."
+    }
+  },
+  "cameras": {
+    "title": "الكاميرات",
+    "subtitle": "الكاميرات المسجّلة لمواقع محددة.",
+    "addAction": "إضافة كاميرا",
+    "totalLabel": "كاميرا",
+    "searchPlaceholder": "ابحث في الكاميرات…",
+    "columns": {
+      "name": "الاسم",
+      "location": "الموقع",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات"
+    },
+    "locationMissing": "موقع غير معروف",
+    "empty": {
+      "title": "لا توجد كاميرات بعد",
+      "description": "أضف كاميرا واربطها بموقع."
+    },
+    "emptyNoLocations": {
+      "title": "أضف موقعًا أولًا",
+      "description": "يجب ربط الكاميرات بموقع موجود.",
+      "cta": "إضافة موقع"
+    },
+    "error": {
+      "title": "تعذّر تحميل الكاميرات",
+      "description": "حدث خطأ أثناء تحميل قائمة الكاميرات.",
+      "retry": "إعادة المحاولة"
+    },
+    "form": {
+      "createTitle": "إضافة كاميرا",
+      "editTitle": "تعديل الكاميرا",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: cam-04",
+      "locationLabel": "الموقع",
+      "locationPlaceholder": "اختر موقعًا",
+      "noLocations": "لا توجد مواقع متاحة",
+      "submitCreate": "إنشاء الكاميرا",
+      "submitEdit": "حفظ التغييرات",
+      "cancel": "إلغاء"
+    },
+    "confirmDelete": {
+      "title": "حذف الكاميرا؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف \"{{name}}\" من الكاميرات.",
+      "confirm": "حذف"
+    },
+    "toast": {
+      "created": "تمت إضافة الكاميرا \"{{name}}\"",
+      "updated": "تم تحديث الكاميرا \"{{name}}\"",
+      "deleted": "تم حذف الكاميرا \"{{name}}\"",
+      "duplicateName": "توجد كاميرا بهذا الاسم في هذا الموقع",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مجددًا."
+    }
+  },
+  "actions": {
+    "edit": "تعديل",
+    "delete": "حذف"
+  },
+  "validation": {
+    "nameRequired": "الاسم مطلوب",
+    "nameMax": "يجب أن يكون الاسم 60 حرفًا أو أقل",
+    "codeRequired": "معرّف نظام SIS مطلوب",
+    "codeMax": "يجب أن يكون معرّف SIS 40 حرفًا أو أقل",
+    "descriptionMax": "يجب أن يكون الوصف 200 حرف أو أقل",
+    "locationRequired": "الموقع مطلوب"
+  }
+}
