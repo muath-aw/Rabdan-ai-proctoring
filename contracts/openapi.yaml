@@ -16,6 +16,16 @@ info:
         persists incidents, serves them here).
       - Live active-exam updates use WebSocket/SSE (see the /realtime section),
         layered on top of these REST resources.
+      - Exams come from the SIS (Student Information System) — this backend
+        ingests them, it does not own their lifecycle.
+      - Locations and Cameras are admin-managed via the /settings endpoints.
+        Each Location carries a `code` field that must match the identifier
+        the SIS sends for that room. AI camera activation for an exam is
+        derived server-side as:
+            `SELECT * FROM cameras WHERE locationId = exam.locationId`
+        If an incoming SIS exam's room identifier doesn't match any known
+        Location.code, the exam is stored with `locationId = null` and no
+        cameras are activated for it until an admin adds a matching Location.
 
 servers:
   - url: https://api.rabdan.example/v1
@@ -31,6 +41,7 @@ tags:
   - name: Exams
   - name: Incidents
   - name: Export
+  - name: Settings
 
 paths:
   # ---------------------------------------------------------------------------
@@ -105,7 +116,7 @@ paths:
     get:
       tags: [Exams]
       summary: Get a single exam's detail/metadata
-      description: Feeds the workspace header (title, room, window, session state, student count).
+      description: Feeds the workspace header (title, location, window, session state, student count).
       parameters:
         - $ref: '#/components/parameters/ExamId'
       responses:
@@ -288,6 +299,159 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExportJob'
 
+  # ---------------------------------------------------------------------------
+  # Settings — Locations & Cameras (admin-managed)
+  # ---------------------------------------------------------------------------
+  /settings/locations:
+    get:
+      tags: [Settings]
+      summary: List locations
+      responses:
+        '200':
+          description: All locations, sorted by name.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Location' }
+    post:
+      tags: [Settings]
+      summary: Create a location
+      description: >
+        Fails with 409 when a location with the same `code` or `name` already
+        exists (case-insensitive dedupe).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LocationForCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Location' }
+        '409':
+          description: Duplicate `code` or `name`.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /settings/locations/{locationId}:
+    parameters:
+      - $ref: '#/components/parameters/LocationId'
+    put:
+      tags: [Settings]
+      summary: Update a location
+      description: >
+        Same dedupe rules as create. Editing `code` is allowed but may orphan
+        exams whose SIS room identifier no longer matches — callers should
+        confirm with the operator before touching it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LocationForUpdate' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Location' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Duplicate `code` or `name`.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Settings]
+      summary: Delete a location
+      description: >
+        Fails with 409 when one or more cameras still reference this location.
+        Exams that reference the location are NOT considered blockers — the
+        backend must handle orphaned exams gracefully (AI activation simply
+        no-ops when `Exam.locationId` is unresolved).
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Location is still referenced by one or more cameras.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /settings/cameras:
+    get:
+      tags: [Settings]
+      summary: List cameras
+      responses:
+        '200':
+          description: All cameras, sorted by name.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Camera' }
+    post:
+      tags: [Settings]
+      summary: Create a camera
+      description: >
+        Camera names must be unique within a Location. Fails with 409 on
+        duplicate `(locationId, name)`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CameraForCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Camera' }
+        '409':
+          description: Duplicate camera name in this location.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /settings/cameras/{cameraId}:
+    parameters:
+      - $ref: '#/components/parameters/CameraId'
+    put:
+      tags: [Settings]
+      summary: Update a camera
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CameraForUpdate' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Camera' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Duplicate camera name in this location.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Settings]
+      summary: Delete a camera
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -303,6 +467,16 @@ components:
       schema: { type: string }
     IncidentId:
       name: incidentId
+      in: path
+      required: true
+      schema: { type: string }
+    LocationId:
+      name: locationId
+      in: path
+      required: true
+      schema: { type: string }
+    CameraId:
+      name: cameraId
       in: path
       required: true
       schema: { type: string }
@@ -367,11 +541,26 @@ components:
 
     ExamSummary:
       type: object
-      description: Card shown in the exam list. Mirrors the UI's ExamSummary.
+      description: >
+        Card shown in the exam list. Mirrors the UI's ExamSummary. Exams
+        originate in the SIS; this backend ingests and serves them.
       properties:
         id: { type: string }
         title: { type: string, example: 'Calculus II · Final' }
-        room: { type: string, example: 'Hall B' }
+        locationId:
+          type: string
+          nullable: true
+          description: >
+            FK to `Location.id`. Null when the SIS's room identifier for this
+            exam does not match any known `Location.code` — the exam is still
+            surfaced, but no cameras are activated for it until an admin adds
+            a matching Location.
+        locationName:
+          type: string
+          nullable: true
+          description: >
+            Denormalized `Location.name` for display in the UI. Backend fills
+            it from the linked Location; null when `locationId` is null.
         status: { $ref: '#/components/schemas/ExamStatus' }
         live:
           type: boolean
@@ -384,28 +573,86 @@ components:
         openIncidents:
           type: integer
           description: UI `open` badge.
-      required: [id, title, room, status, startsAt, endsAt, totalIncidents, openIncidents]
+      required: [id, title, locationId, locationName, status, startsAt, endsAt, totalIncidents, openIncidents]
 
     ExamDetail:
       allOf:
         - $ref: '#/components/schemas/ExamSummary'
         - type: object
+          description: >
+            NOTE: no `cameras` array. Cameras for an exam are derived
+            server-side from `locationId` — see the AI activation rule in the
+            top-level API description.
           properties:
             studentCount:
               type: integer
               description: UI header "students" count.
-            cameras:
-              type: array
-              description: Cameras covering this exam (source of `Incident.camera`).
-              items: { $ref: '#/components/schemas/Camera' }
           required: [studentCount]
 
     Camera:
       type: object
+      description: >
+        A physical camera registered by an admin under a specific Location.
+        Camera names are predefined by the site and not discovered dynamically.
       properties:
-        id: { type: string, example: 'cam-04' }
-        label: { type: string, nullable: true, example: 'Front-left' }
-      required: [id]
+        id: { type: string, example: 'cam-loc-abc-123' }
+        name:
+          type: string
+          example: 'cam-04'
+          description: Immutable-in-spirit identifier of the physical camera.
+        locationId:
+          type: string
+          description: FK to `Location.id`.
+        createdAt: { type: string, format: date-time }
+      required: [id, name, locationId, createdAt]
+
+    Location:
+      type: object
+      description: >
+        A physical room/hall that hosts exams. Admin-managed via the
+        /settings/locations endpoints. `code` is the stable join key against
+        the identifier the SIS sends per exam.
+      properties:
+        id: { type: string, example: 'loc-abc-123' }
+        code:
+          type: string
+          example: 'HALL_B'
+          description: >
+            Stable identifier admins agree with the SIS. Backend joins on this
+            field to resolve `Exam.locationId`. Case-sensitive when matched
+            against SIS strings; unique within the tenant (case-insensitive
+            dedupe on write).
+        name:
+          type: string
+          example: 'Hall B'
+          description: Display name. Free to rename without affecting the join.
+        description:
+          type: string
+          nullable: true
+          description: Optional admin-authored short note.
+        createdAt: { type: string, format: date-time }
+      required: [id, code, name, createdAt]
+
+    LocationForCreate:
+      type: object
+      properties:
+        code: { type: string, example: 'HALL_B' }
+        name: { type: string, example: 'Hall B' }
+        description: { type: string, nullable: true }
+      required: [code, name]
+
+    LocationForUpdate:
+      $ref: '#/components/schemas/LocationForCreate'
+
+    CameraForCreate:
+      type: object
+      properties:
+        name: { type: string, example: 'cam-04' }
+        locationId: { type: string }
+      required: [name, locationId]
+
+    CameraForUpdate:
+      $ref: '#/components/schemas/CameraForCreate'
 
     # --- Incidents ----------------------------------------------------------
     ViolationType:
