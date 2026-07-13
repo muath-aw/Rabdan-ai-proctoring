@@ -95,11 +95,12 @@ Only one role exists in the UI today. The API contract lists `User.roles` as `TO
 | `locationId` | string \| null | Resolved server-side from the SIS's room code → `Location.code` lookup. Null when no match. |
 | `locationName` | string \| null | Denormalized `Location.name` for display. Null when `locationId` is null. |
 | `status` | `active` \| `past` | |
-| `live` | boolean | True while a session is in-progress (only meaningful for `active`). |
-| `startsAt`, `endsAt` | ISO datetime | |
+| `live` | boolean | True while a session is in-progress (only meaningful for `active`). Backend flips this on `startsAt` and flips it off on `endsAt`. See BR-21. |
+| `startsAt`, `endsAt` | ISO datetime | Trigger points for AI activation/deactivation (BR-21). |
 | `totalIncidents` | integer | Convenience count for badges. |
 | `openIncidents` | integer | Convenience count for badges. |
 | `studentCount` | integer | On `ExamDetail` only. |
+| `enrolledStudents` | Student[] | **Backend-only concern**, not shown in the UI. Provided by SIS per exam. Used as the CV pipeline's face-identification corpus for that exam (BR-22). Not modelled in the current OpenAPI contract — see gap in §9. |
 
 **Incident** — CV-pipeline-created, admin-triaged
 | Field | Type | Notes |
@@ -197,6 +198,24 @@ Incident        (1) ────── implicates ── (1–2)   Subject      
 - **BR-18** — The exam list has a manual "Sync now" CTA and a synced-status indicator. Today it's a UI simulation (~1.1s). Backend semantics: force a refresh of the exam list from SIS-cached backend state.
 - **BR-19** — The active-exam header shows a pulsing "Live" badge while `exam.live = true`. Post-hoc workspaces show a `Lock` icon and "Ended" chip.
 
+### 5.7 SIS → backend synchronisation
+
+- **BR-20** — The backend synchronises the exam schedule from the client's SIS on a recurring cadence. The **exact mechanism and interval are TBD** and must be agreed with the SIS integration team (candidates: pull every N minutes, event-driven webhook from the SIS, or a hybrid where the frontend "Sync now" CTA also triggers an on-demand pull). Whichever is chosen, the frontend contract is unaffected — the frontend simply calls `GET /exams`.
+- **BR-21** — Sync must reflect SIS-side mutations, not just additions:
+  - **New exam** → appears in the list on the next sync.
+  - **Rescheduled exam** (`startsAt` / `endsAt` changed) → the backend must overwrite the existing record. If the exam was already `live`, and the new times still cover "now", it stays live; otherwise `live` recomputes based on the new times.
+  - **Cancelled exam** → the backend must remove the exam or flag it as cancelled. **[Open question]** cancellation semantics not yet defined — see §9.
+  - **Location change** on an already-ingested exam → `locationId` is re-resolved via `Location.code` lookup on every sync. Re-resolution may change which cameras the CV pipeline monitors on next activation.
+- **BR-22** — The **enrolled student roster** for each exam is also delivered by the SIS along with the exam. The backend keeps the roster in sync with the SIS and hands it to the CV pipeline as the face-identification corpus for that exam. The frontend does not read the roster directly (except aggregate `studentCount`), so no contract shape is defined for it here yet.
+
+### 5.8 AI monitoring lifecycle
+
+- **BR-23** — **AI activation trigger**: when an exam's `startsAt` is reached AND `exam.locationId` is non-null, the backend flips `exam.live = true` and instructs the CV pipeline to start processing the streams of every camera where `camera.locationId = exam.locationId`. The pipeline scopes its face-identification corpus to `exam.enrolledStudents`.
+- **BR-24** — **AI deactivation trigger**: when `endsAt` is reached, the backend flips `exam.live = false` and instructs the CV pipeline to stop processing for that exam. Any incidents still `open` remain triageable (BR-14).
+- **BR-25** — **Scoping**: the CV pipeline processes cameras only for exams that are currently live. Idle cameras (no active exam in their location) are not analysed. Two exams cannot share a Location during overlapping windows (**out of scope for v1**; guard is the SIS's responsibility not to schedule overlaps).
+- **BR-26** — **Missing prerequisites**: if `exam.locationId` is null at start time (SIS room code didn't match any Location.code, see BR-3), the AI is not activated. The exam appears in the UI, will show 0 incidents throughout, and admins are responsible for creating the missing Location (whereupon a subsequent sync re-resolves the exam).
+- **BR-27** — **Unidentified persons**: if the CV pipeline sees a person in the room whose face doesn't match any student in `exam.enrolledStudents`, the resulting incident's `Subject.studentId` and `Subject.name` are both null (rendered as "Unidentified" in the UI). This may indicate an unauthorised entrant or an SIS/roster mismatch — either way it's flagged.
+
 ---
 
 ## 6. Assumptions
@@ -213,6 +232,10 @@ Explicit assumptions that must hold for the design to work. Any change to these 
 - **A-8** — Two violation types are enough for v1: `phone` (1 subject) and `adjacent` (2 subjects). The contract is extensible; the UI renders unknown types with a generic label.
 - **A-9** — English (LTR) and Arabic (RTL) are the two supported locales. Any new UI text must ship translations in both.
 - **A-10** — Auth is deferred. The console is currently accessible to anyone who reaches the URL; wiring OIDC is a separate workstream.
+- **A-11** — The SIS exposes an API that the backend can consume for both the exam schedule and the enrolled student roster per exam. Mechanism (REST poll, webhook push, message queue, other) is agreed between backend and SIS teams; either way, the frontend contract is insulated (BR-20).
+- **A-12** — The SIS is authoritative for exam mutations: reschedules, cancellations, and roster changes originate there. The console never lets an admin edit these fields.
+- **A-13** — At any point in time, at most one exam is scheduled per Location. Overlapping exams in the same room are considered an SIS-side scheduling error and are out of scope for the AI activation logic (see BR-25).
+- **A-14** — Exam clocks (`startsAt` / `endsAt`) are the sole trigger for AI activation. There is no manual "start proctoring" button; the pipeline is expected to be reliable enough for time-based triggering.
 
 ---
 
@@ -440,17 +463,16 @@ Every UC below reflects what is **implemented in the app today** unless flagged 
 ### 8.1 Exam appearance in the console (end-to-end, target state)
 
 ```
-SIS  ──► Backend  : POST /exams/ingest (or webhook)
-Backend          : normalize + resolve locationId by matching SIS.room → Location.code
-Backend          : persist Exam with locationId (null if unmatched)
-Backend          : if locationId is set, subscribe CV pipeline to cameras where locationId = X
-CV pipeline      : detect violations → POST Incident to Backend
-Backend          : broadcast via WebSocket/SSE to any subscribed frontend clients
-Frontend         : GET /exams?status=active (initial); WS/SSE for live updates
-Frontend         : render exam card / incident row
+SIS  ──► Backend  : sync (webhook push OR periodic pull, mechanism TBD — BR-20)
+Backend          : normalize + resolve locationId by matching SIS.roomCode → Location.code
+Backend          : persist Exam (with locationId, or null if unmatched — BR-3)
+Backend          : persist exam.enrolledStudents (roster) — BR-22
+CV pipeline      : idle (does nothing yet — activation happens at exam.startsAt, BR-23)
+Frontend         : GET /exams?status=active (initial fetch or Sync-now)
+Frontend         : render exam card
 ```
 
-Today the frontend performs only the last two steps against local mocks. Everything above is backend responsibility.
+Today the frontend performs only the last step against local mocks. Everything above is backend responsibility. Live incident updates during the exam window are described separately in §8.5.
 
 ### 8.2 Location code edit fallout
 
@@ -501,6 +523,45 @@ When Exam X starts (backend cron / SIS webhook):
 
 `Camera.streamUrl` is not yet in the schema — it's implicit that cameras have stream endpoints known to the backend. Adding a stream URL field is a candidate for a future contract change; **do not build this into the current stories without confirmation**.
 
+### 8.5 SIS synchronisation and AI lifecycle (end-to-end)
+
+Ties BR-20 through BR-27 into a single timeline for a single exam:
+
+```
+t = -∞ .. -1min  Backend syncs from SIS on cadence (BR-20).
+                 - New exam appears in `GET /exams` results.
+                 - Backend resolves locationId via SIS.roomCode → Location.code.
+                 - Roster (enrolledStudents) is persisted server-side.
+                 - No AI activity yet.
+
+t = 0            exam.startsAt reached.
+                 - Backend flips exam.live = true (BR-23).
+                 - Backend computes cameras_for_exam = Camera WHERE locationId = exam.locationId.
+                 - Backend attaches each stream to CV pipeline, scoped to exam.enrolledStudents.
+                 - Broadcast to any connected frontend clients via WS/SSE [not implemented yet].
+
+t = 0 .. endsAt  Live monitoring window.
+                 - Any SIS re-sync during this window can mutate the exam (reschedule, roster changes) (BR-21).
+                 - Incidents are created and streamed to the frontend.
+                 - Admins triage in the Active workspace (UC-05..09).
+
+t = endsAt       Backend flips exam.live = false (BR-24).
+                 - CV pipeline detaches streams for this exam.
+                 - No new incidents can be created for this exam.
+                 - Exam moves from Active tab to Past tab on next sync.
+
+t > endsAt       Records final for reading, still triageable.
+                 - Past workspace shows the still-open warning if openIncidents > 0 (BR-15).
+                 - Admins can Confirm/Discard/Restore existing incidents.
+                 - PDF proofs and table exports can be generated.
+```
+
+**Failure modes worth calling out**:
+
+- `exam.locationId = null` at t=0 → AI is not activated (BR-26); the exam records 0 incidents throughout its window. Only remediation: an admin creates the missing Location before the next SIS sync.
+- SIS delivers a rescheduled exam mid-window → backend re-computes activation state on next sync. If the exam is now "over" per new `endsAt`, the pipeline is instructed to stop.
+- SIS delivers a cancelled exam → **behaviour TBD** (see §9 gaps). Draft assumption: pipeline stops, exam moves to a cancelled state, existing incidents remain viewable.
+
 ---
 
 ## 9. What the frontend already covers vs. gaps
@@ -531,6 +592,16 @@ When Exam X starts (backend cron / SIS webhook):
 - Storing user preferences (language, theme, filters) server-side.
 - Multi-tenant scoping.
 - Multi-room exams (schema doesn't support them today; if needed, `Exam.locationId` becomes `Exam.locationIds[]`).
+
+### SIS integration — open contract items
+These are contract-shaped decisions that need to be agreed with the SIS integration team before backend implementation can be locked. Each is a candidate for its own story (or ADR):
+
+- **SIS sync mechanism and cadence** (BR-20). Pull every N minutes vs. webhook push vs. hybrid. Determines infrastructure (worker vs. inbound endpoint) and staleness SLA.
+- **Cancellation semantics** (BR-21). What does the SIS actually send when an exam is cancelled — a delete, a status change, silent removal? What does our contract expose to the frontend? Add an `ExamStatus.cancelled` variant, or omit cancelled exams from `GET /exams` entirely?
+- **Enrolled student roster contract** (BR-22, A-11). Not yet modelled in `contracts/openapi.yaml`. Even though the frontend doesn't display individual students, we need to decide whether the roster ever leaks to the client (e.g. for a per-exam student count breakdown, or filtering incidents by student), and if not, keep it as a backend-only concern with a clear boundary.
+- **Camera stream URL / connectivity** (§8.4). The current `Camera` schema has `id`, `name`, `locationId`, `createdAt` — no `streamUrl` or connectivity state. Backend either owns the stream mapping out-of-band or we grow the schema.
+- **AI trigger reliability** (A-14). Is time-based activation acceptable, or do we need a manual "start proctoring" fallback / a health-check ping before start?
+- **Overlap detection** (BR-25, A-13). Backend should probably at least log/alert on overlapping exams in the same Location, even though the SIS is the primary guardrail.
 
 ---
 
