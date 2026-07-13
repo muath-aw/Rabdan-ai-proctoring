@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button, Dialog } from '@components/ui';
 import { Conditional } from '@components/utils';
-import { LoadingButton } from '@components/shared';
+import { PrimeDialog } from '@components/shared';
 import { FormContainer, FormInput, FormSelect } from '@components/forms';
 
 import { useAppTranslation, useToast } from '@hooks/shared';
@@ -82,57 +81,53 @@ function CameraFormDialog({ open, camera, locations, onClose }: CameraFormDialog
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Conditional.If condition={open}>
-        <Dialog.Panel className="max-w-md">
-          <Dialog.Header>
-            <Dialog.Title>
-              <Conditional>
-                <Conditional.If condition={isEdit}>{t('cameras.form.editTitle')}</Conditional.If>
-                <Conditional.Else>{t('cameras.form.createTitle')}</Conditional.Else>
-              </Conditional>
-            </Dialog.Title>
-          </Dialog.Header>
+    <PrimeDialog open={open} onOpenChange={handleOpenChange} isLoading={isPending}>
+      <PrimeDialog.Panel>
+        <PrimeDialog.Header>
+          <PrimeDialog.Title>
+            <Conditional>
+              <Conditional.If condition={isEdit}>{t('cameras.form.editTitle')}</Conditional.If>
+              <Conditional.Else>{t('cameras.form.createTitle')}</Conditional.Else>
+            </Conditional>
+          </PrimeDialog.Title>
+        </PrimeDialog.Header>
 
-          <FormContainer formContext={formContext} onSuccess={handleSubmit} className="flex flex-col gap-4">
-            <Dialog.Content className="flex flex-col gap-4">
-              <FormInput
-                name="name"
-                label={t('cameras.form.nameLabel')}
-                placeholder={t('cameras.form.namePlaceholder')}
-                required
-                autoFocus
-                disabled={isPending}
-              />
+        <FormContainer formContext={formContext} onSuccess={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <PrimeDialog.Content className="flex flex-col gap-4">
+            <FormInput
+              name="name"
+              label={t('cameras.form.nameLabel')}
+              placeholder={t('cameras.form.namePlaceholder')}
+              required
+              autoFocus
+              disabled={isPending}
+            />
 
-              <FormSelect<CameraFormValues, LocationForReadDto>
-                name="locationId"
-                control={formContext.control}
-                label={t('cameras.form.locationLabel')}
-                placeholder={t('cameras.form.locationPlaceholder')}
-                required
-                options={locations}
-                noOptionsText={t('cameras.form.noLocations')}
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.id}
-                disabled={isPending || locations.length === 0}
-                clearable={false}
-              />
-            </Dialog.Content>
+            <FormSelect<CameraFormValues, LocationForReadDto>
+              name="locationId"
+              control={formContext.control}
+              label={t('cameras.form.locationLabel')}
+              placeholder={t('cameras.form.locationPlaceholder')}
+              required
+              options={locations}
+              noOptionsText={t('cameras.form.noLocations')}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+              disabled={isPending || locations.length === 0}
+              clearable={false}
+            />
+          </PrimeDialog.Content>
 
-            <Dialog.Footer className="flex justify-end gap-2">
-              <Button type="button" variant="outline-muted" onClick={onClose} disabled={isPending}>
-                {t('cameras.form.cancel')}
-              </Button>
-
-              <LoadingButton type="submit" variant="default" loading={isPending} disabled={locations.length === 0}>
-                {isEdit ? t('cameras.form.submitEdit') : t('cameras.form.submitCreate')}
-              </LoadingButton>
-            </Dialog.Footer>
-          </FormContainer>
-        </Dialog.Panel>
-      </Conditional.If>
-    </Dialog>
+          <PrimeDialog.Actions
+            primaryButtonProps={{
+              children: isEdit ? t('cameras.form.submitEdit') : t('cameras.form.submitCreate'),
+              disabled: locations.length === 0,
+            }}
+            secondaryButtonProps={{ children: t('cameras.form.cancel'), disabled: isPending }}
+          />
+        </FormContainer>
+      </PrimeDialog.Panel>
+    </PrimeDialog>
   );
 }
 
