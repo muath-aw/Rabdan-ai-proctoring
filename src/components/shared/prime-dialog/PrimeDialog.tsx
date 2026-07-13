@@ -98,9 +98,12 @@ const Header: FC<HeaderProps> = ({ className, children, ...props }) => (
 const Title: FC<TitleProps> = ({ className, children, dialogMode, ...props }) => {
   const context = useContext(PrimeDialogContext);
 
+  const prefix = dialogMode ?? getDialogModeText(context.dialogMode);
+
   return (
     <Dialog.Title className={cn(className)} {...props}>
-      {dialogMode ?? getDialogModeText(context.dialogMode)} {children}
+      <Conditional.If condition={!!prefix}>{prefix} </Conditional.If>
+      {children}
     </Dialog.Title>
   );
 };
@@ -154,19 +157,29 @@ const Actions: FC<ActionsProps> = ({ className, isLoading, dialogMode, primaryBu
 const PrimeDialog: PrimeDialogComponent = ({ open, closeOnSuccess, dialogMode, onOpenChange, children, ...props }) => {
   const [internalOpen, setInternalOpen] = useState(open ?? false);
 
-  const onInternalOpenChange = (open: boolean) => {
-    setInternalOpen((prevState) => !prevState);
+  const handleOpenChange = (nextOpen: boolean) => {
+    setInternalOpen(nextOpen);
 
-    onOpenChange?.(!open);
+    onOpenChange?.(nextOpen);
   };
 
+  // Controlled usage: mirror the `open` prop into internal state when it changes.
   useEffect(() => {
-    if (closeOnSuccess) setInternalOpen(false);
+    if (open !== undefined) setInternalOpen(open);
+  }, [open]);
+
+  useEffect(() => {
+    if (closeOnSuccess) {
+      setInternalOpen(false);
+
+      onOpenChange?.(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeOnSuccess]);
 
   return (
-    <PrimeDialogContext.Provider value={{ open: internalOpen, onOpenChange: onInternalOpenChange, dialogMode, ...props }}>
-      <Dialog open={internalOpen} onOpenChange={onInternalOpenChange} {...props}>
+    <PrimeDialogContext.Provider value={{ open: internalOpen, onOpenChange: handleOpenChange, dialogMode, ...props }}>
+      <Dialog open={internalOpen} onOpenChange={handleOpenChange} {...props}>
         {children}
       </Dialog>
     </PrimeDialogContext.Provider>
