@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { Button, Dialog } from '@components/ui';
+import { Button } from '@components/ui';
 import { Conditional } from '@components/utils';
+import { PrimeDialog } from '@components/shared';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -11,6 +12,7 @@ import { Check, FileText, RotateCcw } from 'lucide-react';
 
 import { CameraStill, StatusBadge, SubjectsCell } from '../incident-cells';
 import { formatConfidence, LOW_CONFIDENCE_THRESHOLD } from '../data';
+
 import type { Incident } from '@app-types';
 
 type IncidentDetailDialogProps = {
@@ -51,19 +53,19 @@ function IncidentDetailPanel({ incident, onConfirm, onDiscard, onRestore, onProo
   const handleProof = () => onProof(incident.id);
 
   return (
-    <Dialog.Panel className="max-w-md">
-      <Dialog.Header>
+    <PrimeDialog.Panel dismissible className="md:max-w-md">
+      <PrimeDialog.Header>
         <div className="flex items-center gap-3">
-          <Dialog.Title>{t('detail.title')}</Dialog.Title>
+          <PrimeDialog.Title>{t('detail.title')}</PrimeDialog.Title>
           <span className="text-muted-400 font-mono text-xs">{incident.id}</span>
         </div>
 
-        <Dialog.Description className="mt-1 font-mono">
+        <PrimeDialog.Description className="mt-1 font-mono">
           {incident.cam}, {incident.time}
-        </Dialog.Description>
-      </Dialog.Header>
+        </PrimeDialog.Description>
+      </PrimeDialog.Header>
 
-      <Dialog.Content className="max-h-[62vh] overflow-y-auto">
+      <PrimeDialog.Content className="max-h-[62vh] overflow-y-auto">
         <CameraStill cam={incident.cam} time={incident.time} type={incident.type} />
 
         <div className="mt-4 flex items-center justify-between">
@@ -101,9 +103,9 @@ function IncidentDetailPanel({ incident, onConfirm, onDiscard, onRestore, onProo
           <MetaItem label={t('detail.timestamp')} value={incident.time} mono />
           <MetaItem label={t('detail.incidentId')} value={incident.id} mono />
         </div>
-      </Dialog.Content>
+      </PrimeDialog.Content>
 
-      <Dialog.Footer className="flex flex-col gap-2">
+      <PrimeDialog.Actions className="flex flex-col gap-2">
         <Conditional.If condition={incident.status === 'open'}>
           <div className="flex w-full gap-2">
             <Button variant="success" className="flex-1" onClick={handleConfirm}>
@@ -134,19 +136,18 @@ function IncidentDetailPanel({ incident, onConfirm, onDiscard, onRestore, onProo
           <FileText size={15} />
           {t('detail.exportProof')}
         </Button>
-      </Dialog.Footer>
-    </Dialog.Panel>
+      </PrimeDialog.Actions>
+    </PrimeDialog.Panel>
   );
 }
 
 function IncidentDetailDialog({ incident, onClose, onConfirm, onDiscard, onRestore, onProof }: IncidentDetailDialogProps) {
-  const handleOpenChange = (open: boolean) => {
-    if (!open) onClose();
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) onClose();
   };
 
-  // Non-null assertion is safe: Conditional.If below only renders when incident is non-null.
   return (
-    <Dialog open={!!incident} onOpenChange={handleOpenChange}>
+    <PrimeDialog open={!!incident} onOpenChange={handleOpenChange}>
       <Conditional.If condition={!!incident}>
         <IncidentDetailPanel
           incident={incident!}
@@ -156,7 +157,7 @@ function IncidentDetailDialog({ incident, onClose, onConfirm, onDiscard, onResto
           onProof={onProof}
         />
       </Conditional.If>
-    </Dialog>
+    </PrimeDialog>
   );
 }
 
