@@ -11,7 +11,7 @@ import { Check, FileText, RotateCcw } from 'lucide-react';
 
 import { CameraStill, StatusBadge, SubjectsCell } from './IncidentCells';
 import { formatConfidence, LOW_CONFIDENCE_THRESHOLD } from '../data';
-import type { Incident } from '../types';
+import type { Incident } from '@app-types';
 
 type IncidentDetailDialogProps = {
   incident: Incident | null;

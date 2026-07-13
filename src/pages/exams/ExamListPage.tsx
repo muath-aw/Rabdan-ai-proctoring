@@ -14,7 +14,7 @@ import { Bell, ChevronRight, RefreshCw, Search, SearchX } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { ACTIVE_EXAMS, PAST_EXAMS } from './data';
-import type { ExamSummary } from './types';
+import type { ExamSummary } from '@app-types';
 
 const SYNC_DURATION_MS = 1100;
 

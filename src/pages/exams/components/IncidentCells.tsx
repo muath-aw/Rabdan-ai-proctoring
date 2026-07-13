@@ -8,7 +8,7 @@ import { cn } from '@utils';
 import { HelpCircle, Users } from 'lucide-react';
 
 import { formatConfidence, LOW_CONFIDENCE_THRESHOLD } from '../data';
-import type { IncidentStatus, ViolationType } from '../types';
+import type { IncidentStatus, ViolationType } from '@app-types';
 
 export const STATUS_BADGE_VARIANT: Record<IncidentStatus, 'warning' | 'success' | 'muted'> = {
   open: 'warning',

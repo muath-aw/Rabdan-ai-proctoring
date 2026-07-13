@@ -1,4 +1,4 @@
-import type { ExamSummary, Incident } from './types';
+import type { ExamSummary, Incident } from '@app-types';
 
 export const EXAM_META = {
   title: 'Calculus II · Final',

@@ -10,7 +10,7 @@ import { createFilterMeta } from '@utils';
 import { Check, FileText, MoreVertical, RotateCcw, ScanSearch, X } from 'lucide-react';
 
 import { ConfidenceCell, StatusBadge, SubjectsCell, Thumbnail, TypeChip } from './IncidentCells';
-import type { Incident } from '../types';
+import type { Incident } from '@app-types';
 
 export type IncidentHandlers = {
   onConfirm: (id: string) => void;

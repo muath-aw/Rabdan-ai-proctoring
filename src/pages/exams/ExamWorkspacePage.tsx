@@ -27,7 +27,7 @@ import ExportDialog from './components/ExportDialog';
 import IncidentDetailDialog from './components/IncidentDetailDialog';
 import { buildIncidentColumns, type IncidentHandlers } from './components/incident-columns';
 import { EXAM_META, seedIncidents } from './data';
-import type { Incident, IncidentStatus, WorkspaceMode } from './types';
+import type { Incident, IncidentStatus, WorkspaceMode } from '@app-types';
 
 type ExamWorkspacePageProps = {
   mode: WorkspaceMode;

@@ -6,7 +6,7 @@ import { useAppTranslation } from '@hooks/shared';
 import { Lock } from 'lucide-react';
 
 import { EXAM_META } from '../data';
-import type { WorkspaceMode } from '../types';
+import type { WorkspaceMode } from '@app-types';
 
 type ExamHeaderProps = {
   mode: WorkspaceMode;
