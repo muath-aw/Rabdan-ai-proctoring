@@ -28,7 +28,7 @@ function ExportDialog({ open, items, subtitle, onClose, onExport }: ExportDialog
 
   return (
     <PrimeDialog open={open} onOpenChange={handleOpenChange}>
-      <PrimeDialog.Panel dismissible className="md:max-w-2xl">
+      <PrimeDialog.Panel dismissible>
         <PrimeDialog.Header>
           <PrimeDialog.Title>{t('export.title')}</PrimeDialog.Title>
           <PrimeDialog.Description className="mt-1">{subtitle}</PrimeDialog.Description>

@@ -53,7 +53,7 @@ function IncidentDetailPanel({ incident, onConfirm, onDiscard, onRestore, onProo
   const handleProof = () => onProof(incident.id);
 
   return (
-    <PrimeDialog.Panel dismissible className="md:max-w-md">
+    <PrimeDialog.Panel dismissible>
       <PrimeDialog.Header>
         <div className="flex items-center gap-3">
           <PrimeDialog.Title>{t('detail.title')}</PrimeDialog.Title>

@@ -71,7 +71,7 @@ const Panel: FC<PanelProps> = ({ dismissible = false, className, children, ...pr
 
   return (
     <Dialog.Panel
-      className={cn('flex max-h-[90dvh] flex-col overflow-clip py-0 md:max-w-200', className)}
+      className={cn('flex max-h-[90dvh] flex-col overflow-clip py-0 md:max-w-5xl', className)}
       aria-describedby={undefined}
       onInteractOutside={(e) => !dismissible && e.preventDefault()}
       onEscapeKeyDown={(e) => !dismissible && e.preventDefault()}
