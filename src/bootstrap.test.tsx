@@ -8,6 +8,7 @@ vi.mock('react-dom/client', () => ({
 vi.mock('@api/config', () => ({ queryClient: {} }));
 vi.mock('@routes', () => ({ ROUTER: {} }));
 vi.mock('@contexts', () => ({
+  THEME_TYPES: { SYSTEM: 'system', LIGHT: 'light', DARK: 'dark' },
   ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
   AppDirectionProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
