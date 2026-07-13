@@ -146,6 +146,7 @@ function IncidentDetailDialog({ incident, onClose, onConfirm, onDiscard, onResto
     if (!nextOpen) onClose();
   };
 
+  // Non-null assertion is safe: the Conditional.If below only renders the panel when incident is non-null.
   return (
     <PrimeDialog open={!!incident} onOpenChange={handleOpenChange}>
       <Conditional.If condition={!!incident}>

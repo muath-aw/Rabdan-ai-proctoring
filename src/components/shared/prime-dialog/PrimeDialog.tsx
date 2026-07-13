@@ -157,20 +157,18 @@ const Actions: FC<ActionsProps> = ({ className, isLoading, dialogMode, primaryBu
 const PrimeDialog: PrimeDialogComponent = ({ open, closeOnSuccess, dialogMode, onOpenChange, children, ...props }) => {
   const [internalOpen, setInternalOpen] = useState(open ?? false);
 
+  const isControlled = open !== undefined;
+  const effectiveOpen = isControlled ? open : internalOpen;
+
   const handleOpenChange = (nextOpen: boolean) => {
-    setInternalOpen(nextOpen);
+    if (!isControlled) setInternalOpen(nextOpen);
 
     onOpenChange?.(nextOpen);
   };
 
-  // Controlled usage: mirror the `open` prop into internal state when it changes.
-  useEffect(() => {
-    if (open !== undefined) setInternalOpen(open);
-  }, [open]);
-
   useEffect(() => {
     if (closeOnSuccess) {
-      setInternalOpen(false);
+      if (!isControlled) setInternalOpen(false);
 
       onOpenChange?.(false);
     }
@@ -178,8 +176,8 @@ const PrimeDialog: PrimeDialogComponent = ({ open, closeOnSuccess, dialogMode, o
   }, [closeOnSuccess]);
 
   return (
-    <PrimeDialogContext.Provider value={{ open: internalOpen, onOpenChange: handleOpenChange, dialogMode, ...props }}>
-      <Dialog open={internalOpen} onOpenChange={handleOpenChange} {...props}>
+    <PrimeDialogContext.Provider value={{ open: effectiveOpen, onOpenChange: handleOpenChange, dialogMode, ...props }}>
+      <Dialog open={effectiveOpen} onOpenChange={handleOpenChange} {...props}>
         {children}
       </Dialog>
     </PrimeDialogContext.Provider>
