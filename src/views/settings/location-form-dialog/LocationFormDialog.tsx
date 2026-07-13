@@ -63,7 +63,7 @@ function LocationFormDialog({ open, location, onClose }: LocationFormDialogProps
       description: values.description?.trim() ? values.description : null,
     };
 
-    const onSuccess = (created: LocationForReadDto) => {
+    const handleSuccess = (created: LocationForReadDto) => {
       toast({
         title: t(isEdit ? 'locations.toast.updated' : 'locations.toast.created', { name: created.name }),
         variant: 'success',
@@ -71,7 +71,7 @@ function LocationFormDialog({ open, location, onClose }: LocationFormDialogProps
       onClose();
     };
 
-    const onError = (error: unknown) => {
+    const handleError = (error: unknown) => {
       if (error instanceof DuplicateLocationCodeError) {
         formContext.setError('code', { message: t('locations.toast.duplicateCode') });
         return;
@@ -84,9 +84,9 @@ function LocationFormDialog({ open, location, onClose }: LocationFormDialogProps
     };
 
     if (isEdit && location) {
-      updateMutation.mutate({ id: location.id, payload }, { onSuccess, onError });
+      updateMutation.mutate({ id: location.id, payload }, { onSuccess: handleSuccess, onError: handleError });
     } else {
-      createMutation.mutate(payload, { onSuccess, onError });
+      createMutation.mutate(payload, { onSuccess: handleSuccess, onError: handleError });
     }
   };
 

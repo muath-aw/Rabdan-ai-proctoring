@@ -14,9 +14,8 @@ import { Conditional } from '@components/utils';
 import { BlankSlate, ConfirmDialog } from '@components/shared';
 import { DataTable } from '@components/tables';
 
-import { useAppTranslation, useToast } from '@hooks/shared';
-import { DateFormats, formatDateValue } from '@hooks/shared';
-import { useLocationsQuery, useCamerasQuery } from '@hooks/queries';
+import { DateFormats, formatDateValue, useAppTranslation, useToast } from '@hooks/shared';
+import { useCamerasQuery, useLocationsQuery } from '@hooks/queries';
 import { LocationInUseError, useDeleteLocationMutation } from '@hooks/mutations';
 
 import { MapPin, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react';

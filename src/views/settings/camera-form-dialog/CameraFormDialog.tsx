@@ -57,7 +57,7 @@ function CameraFormDialog({ open, camera, locations, onClose }: CameraFormDialog
   };
 
   const handleSubmit = (values: CameraFormValues) => {
-    const onSuccess = (created: CameraForReadDto) => {
+    const handleSuccess = (created: CameraForReadDto) => {
       toast({
         title: t(isEdit ? 'cameras.toast.updated' : 'cameras.toast.created', { name: created.name }),
         variant: 'success',
@@ -65,7 +65,7 @@ function CameraFormDialog({ open, camera, locations, onClose }: CameraFormDialog
       onClose();
     };
 
-    const onError = (error: unknown) => {
+    const handleError = (error: unknown) => {
       if (error instanceof DuplicateCameraNameError) {
         formContext.setError('name', { message: t('cameras.toast.duplicateName') });
         return;
@@ -74,9 +74,9 @@ function CameraFormDialog({ open, camera, locations, onClose }: CameraFormDialog
     };
 
     if (isEdit && camera) {
-      updateMutation.mutate({ id: camera.id, payload: values }, { onSuccess, onError });
+      updateMutation.mutate({ id: camera.id, payload: values }, { onSuccess: handleSuccess, onError: handleError });
     } else {
-      createMutation.mutate(values, { onSuccess, onError });
+      createMutation.mutate(values, { onSuccess: handleSuccess, onError: handleError });
     }
   };
 
