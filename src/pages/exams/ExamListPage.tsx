@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Badge, Button, Input, Select, Tabs } from '@components/ui';
 import { ActionPanel, BlankSlate } from '@components/shared';
 import { Conditional } from '@components/utils';
+import { ACTIVE_EXAMS, PAST_EXAMS } from '@views/exams';
 
 import { useAppTranslation } from '@hooks/shared';
 
@@ -13,7 +14,6 @@ import { cn } from '@utils';
 import { Bell, ChevronRight, RefreshCw, Search, SearchX } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { ACTIVE_EXAMS, PAST_EXAMS } from './data';
 import type { ExamSummary } from '@app-types';
 
 const SYNC_DURATION_MS = 1100;

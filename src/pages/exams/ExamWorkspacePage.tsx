@@ -14,6 +14,7 @@ import {
 import { Alert, Button } from '@components/ui';
 import { DataTable } from '@components/tables';
 import { Conditional } from '@components/utils';
+import { buildIncidentColumns, EXAM_META, ExamHeader, ExportDialog, IncidentDetailDialog, seedIncidents, type IncidentHandlers } from '@views/exams';
 
 import { useAppTranslation, useToast } from '@hooks/shared';
 
@@ -22,11 +23,6 @@ import { FULL_ROUTES_PATH } from '@routes';
 import { Check, ChevronLeft, Download, Lock, TriangleAlert } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import ExamHeader from './components/ExamHeader';
-import ExportDialog from './components/ExportDialog';
-import IncidentDetailDialog from './components/IncidentDetailDialog';
-import { buildIncidentColumns, type IncidentHandlers } from './components/incident-columns';
-import { EXAM_META, seedIncidents } from './data';
 import type { Incident, IncidentStatus, WorkspaceMode } from '@app-types';
 
 type ExamWorkspacePageProps = {

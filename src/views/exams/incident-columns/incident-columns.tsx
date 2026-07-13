@@ -9,7 +9,7 @@ import { createFilterMeta } from '@utils';
 
 import { Check, FileText, MoreVertical, RotateCcw, ScanSearch, X } from 'lucide-react';
 
-import { ConfidenceCell, StatusBadge, SubjectsCell, Thumbnail, TypeChip } from './IncidentCells';
+import { ConfidenceCell, StatusBadge, SubjectsCell, Thumbnail, TypeChip } from '../incident-cells';
 import type { Incident } from '@app-types';
 
 export type IncidentHandlers = {

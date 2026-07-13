@@ -5,7 +5,7 @@ import { useAppTranslation } from '@hooks/shared';
 
 import { Download, HelpCircle } from 'lucide-react';
 
-import { StatusBadge } from './IncidentCells';
+import { StatusBadge } from '../incident-cells';
 import type { Incident } from '@app-types';
 
 type ExportDialogProps = {
