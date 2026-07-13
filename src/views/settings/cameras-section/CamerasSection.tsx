@@ -23,7 +23,7 @@ import { Camera as CameraIcon, MoreVertical, Pencil, Plus, Trash2 } from 'lucide
 
 import type { CameraForReadDto } from '@app-types';
 
-import CameraFormDialog from './CameraFormDialog';
+import { CameraFormDialog } from '../camera-form-dialog';
 
 type CameraRow = CameraForReadDto & { locationName: string };
 

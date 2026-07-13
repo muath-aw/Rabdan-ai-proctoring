@@ -2,10 +2,9 @@ import { useCallback, useRef } from 'react';
 
 import { ActionPanel } from '@components/shared';
 
-import { useAppTranslation } from '@hooks/shared';
+import { CamerasSection, LocationsSection } from '@views/settings';
 
-import CamerasSection from './components/CamerasSection';
-import LocationsSection from './components/LocationsSection';
+import { useAppTranslation } from '@hooks/shared';
 
 function SettingsPage() {
   const { t } = useAppTranslation('settings');

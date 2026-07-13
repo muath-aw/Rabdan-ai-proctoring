@@ -23,7 +23,7 @@ import { MapPin, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 
 import type { CameraForReadDto, LocationForReadDto } from '@app-types';
 
-import LocationFormDialog from './LocationFormDialog';
+import { LocationFormDialog } from '../location-form-dialog';
 
 type LocationRow = LocationForReadDto & { cameraCount: number };
 
