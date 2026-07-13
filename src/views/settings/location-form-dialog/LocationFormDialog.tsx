@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button, Dialog } from '@components/ui';
 import { Conditional } from '@components/utils';
-import { LoadingButton } from '@components/shared';
+import { PrimeDialog } from '@components/shared';
 import { FormContainer, FormInput, FormTextarea } from '@components/forms';
 
 import { useAppTranslation, useToast } from '@hooks/shared';
@@ -92,65 +91,58 @@ function LocationFormDialog({ open, location, onClose }: LocationFormDialogProps
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Conditional.If condition={open}>
-        <Dialog.Panel className="max-w-md">
-          <Dialog.Header>
-            <Dialog.Title>
-              <Conditional>
-                <Conditional.If condition={isEdit}>{t('locations.form.editTitle')}</Conditional.If>
-                <Conditional.Else>{t('locations.form.createTitle')}</Conditional.Else>
-              </Conditional>
-            </Dialog.Title>
-          </Dialog.Header>
+    <PrimeDialog open={open} onOpenChange={handleOpenChange} isLoading={isPending}>
+      <PrimeDialog.Panel>
+        <PrimeDialog.Header>
+          <PrimeDialog.Title>
+            <Conditional>
+              <Conditional.If condition={isEdit}>{t('locations.form.editTitle')}</Conditional.If>
+              <Conditional.Else>{t('locations.form.createTitle')}</Conditional.Else>
+            </Conditional>
+          </PrimeDialog.Title>
+        </PrimeDialog.Header>
 
-          <FormContainer formContext={formContext} onSuccess={handleSubmit} className="flex flex-col gap-4">
-            <Dialog.Content className="flex flex-col gap-4">
-              <FormInput
-                name="name"
-                label={t('locations.form.nameLabel')}
-                placeholder={t('locations.form.namePlaceholder')}
-                required
-                autoFocus
-                disabled={isPending}
-              />
+        <FormContainer formContext={formContext} onSuccess={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <PrimeDialog.Content className="flex flex-col gap-4">
+            <FormInput
+              name="name"
+              label={t('locations.form.nameLabel')}
+              placeholder={t('locations.form.namePlaceholder')}
+              required
+              autoFocus
+              disabled={isPending}
+            />
 
-              <FormInput
-                name="code"
-                label={t('locations.form.codeLabel')}
-                placeholder={t('locations.form.codePlaceholder')}
-                required
-                disabled={isPending}
-                className="font-mono"
-                aria-describedby="location-code-help"
-              />
+            <FormInput
+              name="code"
+              label={t('locations.form.codeLabel')}
+              placeholder={t('locations.form.codePlaceholder')}
+              required
+              disabled={isPending}
+              className="font-mono"
+              aria-describedby="location-code-help"
+            />
 
-              <p id="location-code-help" className="text-muted-foreground -mt-2 text-xs">
-                {t('locations.form.codeHelp')}
-              </p>
+            <p id="location-code-help" className="text-muted-foreground -mt-2 text-xs">
+              {t('locations.form.codeHelp')}
+            </p>
 
-              <FormTextarea
-                name="description"
-                label={t('locations.form.descriptionLabel')}
-                placeholder={t('locations.form.descriptionPlaceholder')}
-                rows={3}
-                disabled={isPending}
-              />
-            </Dialog.Content>
+            <FormTextarea
+              name="description"
+              label={t('locations.form.descriptionLabel')}
+              placeholder={t('locations.form.descriptionPlaceholder')}
+              rows={3}
+              disabled={isPending}
+            />
+          </PrimeDialog.Content>
 
-            <Dialog.Footer className="flex justify-end gap-2">
-              <Button type="button" variant="outline-muted" onClick={onClose} disabled={isPending}>
-                {t('locations.form.cancel')}
-              </Button>
-
-              <LoadingButton type="submit" variant="default" loading={isPending}>
-                {isEdit ? t('locations.form.submitEdit') : t('locations.form.submitCreate')}
-              </LoadingButton>
-            </Dialog.Footer>
-          </FormContainer>
-        </Dialog.Panel>
-      </Conditional.If>
-    </Dialog>
+          <PrimeDialog.Actions
+            primaryButtonProps={{ children: isEdit ? t('locations.form.submitEdit') : t('locations.form.submitCreate') }}
+            secondaryButtonProps={{ children: t('locations.form.cancel'), disabled: isPending }}
+          />
+        </FormContainer>
+      </PrimeDialog.Panel>
+    </PrimeDialog>
   );
 }
 
